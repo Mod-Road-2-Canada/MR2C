@@ -1,109 +1,82 @@
-<script> /*
-	import Counter from './Counter.svelte';
-	import welcome from '$lib/images/svelte-welcome.webp';
-	import welcome_fallback from '$lib/images/svelte-welcome.png'; */
-	import { invoke } from "@tauri-apps/api/tauri";
-	import { appDataDir } from '@tauri-apps/api/path';
-	const appDataDirPath = await appDataDir();
+<script lang='ts'>
+	import { GFX_FOLDER, BACKUP_GFX_FOLDER, DATA_FILE, MODS, COOKIES_LOADED } from '$lib/stores.ts';
+	import { onMount } from 'svelte';
+	import toast from 'svelte-french-toast';
+	import { invoke } from '@tauri-apps/api/tauri';
+	import { open } from '@tauri-apps/api/dialog';
 
-	let greetMsg = '';
-	let selectedMods = [];
-
-	let mods = [];
-	$: modcount = mods.length;
-
-	async function getMods () {
+	async function setCWD () {
 		try {
-			mods = await invoke('get_mods');
-			console.log(mods);
+			// const basedir = await executableDir();
+			// console.log(basedir);
+			const selected = await open({
+				directory: true,
+				multiple: false,
+				defaultPath: await invoke('get_cwd')
+			});
+
+			if (selected == null) {
+				throw "No folder selected";
+			} else {
+				await invoke('set_cwd', {pathCwd: selected});
+			}
+
+			toast.success("Changed cwd to " + selected);
 		} catch (err) {
-			console.error(err.message);
+			toast.error(err);
+			console.error(err);
 		}
 	}
-		let fillings = [];
-		$: { console.log(selectedMods); }
+
+	async function getGFX () {
+		try {
+			// const basedir = await executableDir();
+			// console.log(basedir);
+			const selected = await open({
+				directory: true,
+				multiple: false,
+				defaultPath: await invoke('get_cwd')
+			});
+
+			if (selected == null) {
+				throw "No folder selected";
+			} else {
+				GFX_FOLDER.set(selected);
+			}
+
+			let count = await invoke('copy_dir_all', {src: $GFX_FOLDER, dst: BACKUP_GFX_FOLDER, overwrite: false});
+			toast.success(count + " file(s) copied");
+		} catch (err) {
+			toast.error(err);
+			console.error(err);
+		}
+	}
+
+
+	export async function loadData () {
+		if (!$COOKIES_LOADED) {
+			try {
+				const cookies = JSON.parse(await invoke('load_cookies', {file: DATA_FILE}));
+				GFX_FOLDER.set(cookies.gfx_dir);
+				MODS.set(cookies.modlist);
+
+				COOKIES_LOADED.set(true);
+				toast.success("Session loaded.");
+			} catch (err) {
+				toast.error("Session not found." + err);
+				console.error(err);
+			}
+		}
+	}
+
+	onMount(loadData);
+
 </script>
 
-<section>
-<input type="checkbox" bind:group={fillings} value="Rice">
-<input type="checkbox" bind:group={fillings} value="Beans">
-<input type="checkbox" bind:group={fillings} value="Cheese">
-<input type="checkbox" bind:group={fillings} value="Guac (extra)">
+<h1>Home</h1>
+<p>this is the HMEEEEEEE page.</p>
+<b>{$GFX_FOLDER}</b><br/>
+<b>{BACKUP_GFX_FOLDER}</b><br/>
 
-	<div class="container">
-		
-		<h1>
-			<span class="welcome">
-
-			</span>
-
-			to your new<br />SvelteKit app
-		</h1>
-
-		<h2>
-			try editing <strong>src/routes/+page.svelte</strong>
-		</h2>
-		<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
-
-	</div>
-
-
-	<div class="container text-start">
-					
-		{#each mods as mod, i}
-			<div class="form-check">
-						<label class="form-check-label">
-							<input class="form-check-input me-3" type=checkbox bind:group={selectedMods} value={mod} />
-							{mod}
-						</label>
-			</div>		
-		{/each}
-
-	</div>
-
-
-	<div class="container text-center my-5">
-		<div class="row">
-			<h1>Welcome to Tauri!</h1>
-		</div>
-			
-		<p>Click on the Tauri, Vite, and React logos to learn more.</p>
-
-		<div class="row">
-			<div class="col">
-				<button class="" on:click={getMods} >Wei</button>
-			</div>
-		</div>
-		<p>{greetMsg} {modcount}</p>
-	</div>
-</section>
-
-<style>
-	section {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		flex: 0.6;
-	}
-
-	h1 {
-		width: 100%;
-	}
-
-	.welcome {
-		display: block;
-		position: relative;
-		width: 100%;
-		height: 0;
-		padding: 0 0 calc(100% * 495 / 2048) 0;
-	}
-
-	.welcome img {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		display: block;
-	}
-</style>
+<button class="btn" on:click={setCWD} >CWD</button>
+<button class="btn" on:click={getGFX} >Select original gfx folder</button>
