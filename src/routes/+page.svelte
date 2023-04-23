@@ -73,10 +73,10 @@
 
 </script>
 
-<h1>Home</h1>
-<p>this is the HMEEEEEEE page.</p>
-<b>{$GFX_FOLDER}</b><br/>
-<b>{BACKUP_GFX_FOLDER}</b><br/>
+<div class="p-3">
+	<b>{$GFX_FOLDER}</b><br/>
+	<b>{BACKUP_GFX_FOLDER}</b><br/>
 
-<button class="btn" on:click={setCWD} >CWD</button>
-<button class="btn" on:click={getGFX} >Select original gfx folder</button>
+	<button class="btn" on:click={setCWD} >CWD</button>
+	<button class="btn" on:click={getGFX} >Select original gfx folder</button>
+</div>

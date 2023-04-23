@@ -3,4 +3,4 @@
   export let href = '';
 </script>
 
-<a class="tab tab-lifted" class:tab-active={$page.url.pathname === href} href={href}><slot /></a>
+<a class="tab tab-lifted" class:tab-active={$page.url.pathname === href} href={href}><b><slot /></b></a>

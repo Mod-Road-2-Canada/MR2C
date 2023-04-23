@@ -21,8 +21,8 @@
 	<Toaster toastOptions={toastNewDefault}/>
 
 	<CustomTab href='/mod'>Mod</CustomTab>
-	<CustomTab href='/'>Homeeee</CustomTab>
-	<CustomTab href='/about'>Aboutdsd</CustomTab>
+	<CustomTab href='/'>Home</CustomTab>
+	<CustomTab href='/about'>About</CustomTab>
 </div>
 
 <slot />
