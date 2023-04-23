@@ -20,9 +20,9 @@
 <div class="tabs align-items-end" style="background: url({banner}) no-repeat center; background-size: cover; height: 40vh;">
 	<Toaster toastOptions={toastNewDefault}/>
 
-	<CustomTab href='/mod'>Mod</CustomTab>
+	<CustomTab href='/mod'>Mods</CustomTab>
 	<CustomTab href='/'>Home</CustomTab>
-	<CustomTab href='/about'>About</CustomTab>
+	<!-- <CustomTab href='/about'>About</CustomTab> -->
 </div>
 
 <slot />

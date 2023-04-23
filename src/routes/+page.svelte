@@ -43,7 +43,14 @@
 			} else {
 				GFX_FOLDER.set(selected);
 			}
+		} catch (err) {
+			toast.error(err);
+			console.error(err);
+		}
+	}
 
+	async function backupGFX () {
+		try {
 			let count = await invoke('copy_dir_all', {src: $GFX_FOLDER, dst: BACKUP_GFX_FOLDER, overwrite: false});
 			toast.success(count + " file(s) copied");
 		} catch (err) {
@@ -74,9 +81,17 @@
 </script>
 
 <div class="p-3">
-	<b>{$GFX_FOLDER}</b><br/>
-	<b>{BACKUP_GFX_FOLDER}</b><br/>
-
+	<div class="mb-3">
+		<label class="label">
+			<span class="label-text">Select original gfx folder:</span>	
+		</label>
+		<div class="input-group">
+			<input type="button" value="CHOOSE" class="btn file-input file-input-bordered" on:click={getGFX} />
+			<span class="w-full file-input file-input-bordered">{$GFX_FOLDER}</span>
+		</div>
+	</div>
+	{#if $GFX_FOLDER != ""}
+		<button class="btn btn-primary mr-2" on:click={backupGFX}>Back up</button>
+	{/if}
 	<button class="btn" on:click={setCWD} >CWD</button>
-	<button class="btn" on:click={getGFX} >Select original gfx folder</button>
 </div>
