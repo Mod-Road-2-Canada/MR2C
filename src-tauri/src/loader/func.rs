@@ -70,6 +70,10 @@ impl Indices {
 		}
 	}
 
+	fn get_changed_indices(&mut self) -> Vec<usize> {
+		(1..self.arr.len()).filter(|&i| self.arr[i] != 0).collect()
+	}
+
 	fn map_modded_indices(&mut self, all: &mut Indices) {
 		for i in 2..self.arr.len() {
 			self.arr[i] += all.arr[i-1];
@@ -77,12 +81,12 @@ impl Indices {
 		}
 	}
 
-	fn map_indices_to_df_file(&self, output_file: &str) -> Result<(), Error> {
+	fn map_from_changed_indices_to_df_file(&self, filtered: &Vec<usize> , output_file: &str) -> Result<(), Error> {
 		let file = File::create(output_file)?;
 		let mut writer = BufWriter::new(file);
 
-		for i in 1..self.arr.len() {
-			let line = format!("{} constant {}\n", self.arr[i], Self::map_index_to_name(i));
+		for i in filtered.iter() {
+			let line = format!("{} constant {}\n", self.arr[*i], Self::map_index_to_name(*i));
 			writer.write_all(line.as_bytes())?;
 		}
 
@@ -491,8 +495,9 @@ pub fn merge_all_img_to_gfx<P: AsRef<Path>>(mod_gfx: P, game_gfx: &str, backup_g
 		}
 	}
 
+	let changed_indices = mod_indices.get_changed_indices();
 	mod_indices.map_modded_indices(&mut all_indices);
-	mod_indices.map_indices_to_df_file(index_file)?;
+	mod_indices.map_from_changed_indices_to_df_file(&changed_indices, index_file)?;
 
 	Ok(countmerged)
 }

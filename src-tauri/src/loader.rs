@@ -61,7 +61,7 @@ pub fn load_mod(mod_file: &str, mod_tag: &str, gfx_modded: &str, gfx_vanilla: &s
 	let mut engine = Engine::new();
 	let mut scope = Scope::new();
 
-	// Register the Person type with the Rhai Engine
+	// Register the Functions with the Rhai Engine
 	engine
 		.set_strict_variables(true)
 		.set_allow_looping(false)
@@ -80,7 +80,7 @@ pub fn load_mod(mod_file: &str, mod_tag: &str, gfx_modded: &str, gfx_vanilla: &s
 	scope.push("Search", "");
 	scope.push("Above", false);
 
-	scope.push("Folder", "");
+	scope.push("GfxFolder", "");
 	scope.push("IndexFile", "");
 
 	scope.push("RESULT", "");
@@ -94,13 +94,10 @@ pub fn load_mod(mod_file: &str, mod_tag: &str, gfx_modded: &str, gfx_vanilla: &s
 	println!("{:?}", std::env::current_dir()?.display());
 	let mut script = std::fs::read_to_string(mod_file)?;
 	script = script.replace("Save_This.", throw_on_err!("Savefile(File, Add, Search, Above, mod_tag, mod_install_state);") );
-	script = script.replace("Merge_This.", throw_on_err!("Mergefile(Folder, gfx_modded, gfx_vanilla, IndexFile, mod_install_state);") );
+	script = script.replace("Merge_This.", throw_on_err!("Mergefile(GfxFolder, gfx_modded, gfx_vanilla, IndexFile, mod_install_state);") );
 	script = script.replace("Overlap_This.", throw_on_err!("Overlapfile(File, Add, mod_install_state);") );
 
 	script.push_str("RESULT");
-
-
-
 
 	// Evaluate a Rhai script
 	let reslut = engine.eval_with_scope::<String>(&mut scope, &script);

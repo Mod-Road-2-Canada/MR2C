@@ -77,7 +77,7 @@
 
 
 	async function loadMods () {
-		try {	// Clear the old ones
+		try {	// Clear / Reset the modded spritesheets to vanillas
 			console.time('copydir');
 			let count = await invoke('copy_dir_all', {src: BACKUP_GFX_FOLDER, dst: $GFX_FOLDER, overwrite: true});
 			console.timeEnd('copydir');
