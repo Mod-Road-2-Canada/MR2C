@@ -32,8 +32,8 @@
   └📁 deathforth
   └📁 gfx
   └📁 mods
-    <b>└📁 Example
-    📄 example.json</b>
+    <mark>└📁 Example </mark>
+    <mark>📄 example.json </mark>
   🐴 DR2C MOD INSTALLER
 </code></pre>
 
