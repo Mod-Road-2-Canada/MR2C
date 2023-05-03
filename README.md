@@ -32,9 +32,9 @@
   └📁 deathforth
   └📁 gfx
   └📁 mods
-    <em>└📂 Example
-      📑 example.dfmod
-    📄 example.json</em>
+    └📂 <b><em>Example</em></b>
+      📑 <em>example.dfmod</em>
+    📄 <em>example.json</em>
   🐴 DR2C MOD INSTALLER
 </code></pre>
 
