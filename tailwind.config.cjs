@@ -22,6 +22,7 @@ export default {
 		"cupcake"],
 	},
 	plugins: [
+		require("@tailwindcss/typography"),
 		require('daisyui'),
 	],
 }
