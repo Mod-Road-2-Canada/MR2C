@@ -99,10 +99,10 @@
 				await invoke('load_mod', {...modArgs, modInstallState: 2});
 				if (mod.checked) {
 					await invoke('load_mod', {...modArgs, modInstallState: 1});
+					toast.success("Done: " + mod.name, { position: "bottom-right"});
 				}
-
+				
 				console.timeEnd(mod.name);
-				toast.success("Done: " + mod.name, { position: "bottom-right"});
 			} catch (err) {
 				toast.error("In: " + mod.name + "\nError: " + err);
 			}

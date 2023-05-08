@@ -93,5 +93,8 @@
 	{#if $GFX_FOLDER != ""}
 		<button class="btn btn-primary mr-2" on:click={backupGFX}>Back up</button>
 	{/if}
-	<button class="btn" on:click={setCWD} >CWD</button>
+
+
+	<!-- <button class="btn" on:click={setCWD} >CWD</button> -->
+	<!-- For testing only -->
 </div>
