@@ -15,9 +15,11 @@
 
 
 <div class="p-3 overflow-auto" style="height: 60vh;">
-	<h1>TEST</h1>
-	<div class="prose">
+	<div class="prose" style="max-width: none;">
 		<SvelteMarkdown source={readme} />
 	</div>
 </div>
+
+<style>
+</style>
 

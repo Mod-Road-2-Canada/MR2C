@@ -22,7 +22,7 @@
 
 	<CustomTab href='/'>Home</CustomTab>
 	<CustomTab href='/mod'>Install Mods</CustomTab>
-	<CustomTab href='/tools'>For Modders</CustomTab>
+	<CustomTab href='/tools'>Help</CustomTab>
 </div>
 
 <slot />
