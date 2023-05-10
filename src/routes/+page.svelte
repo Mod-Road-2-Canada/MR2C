@@ -78,6 +78,8 @@
 
 	onMount(loadData);
 
+  import SvelteMarkdown from 'svelte-markdown';
+  import readme from '$lib/README_USER.md?raw';
 </script>
 
 <div class="p-3">
@@ -94,7 +96,9 @@
 		<button class="btn btn-primary mr-2" on:click={backupGFX}>Back up</button>
 	{/if}
 
-
+	<div class="prose" style="max-width: none;">
+		<SvelteMarkdown source={readme} />
+	</div>
 	<!-- <button class="btn" on:click={setCWD} >CWD</button> -->
 	<!-- For testing only -->
 </div>
