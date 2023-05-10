@@ -17,7 +17,7 @@
 </script>
 
 <!-- <img src={banner} alt="Banner for mod installer" style="width: 100%; height: 35vh; object-fit: cover;"/> -->
-<div class="tabs align-items-end" style="background: url({banner}) no-repeat center; background-size: cover; height: 40vh;">
+<div class="tabs align-items-end" style="background: url({banner}) no-repeat center; background-size: cover; height: 30vh;">
 	<Toaster toastOptions={toastNewDefault}/>
 
 	<CustomTab href='/'>Home</CustomTab>

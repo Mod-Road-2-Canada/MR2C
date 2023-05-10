@@ -1,4 +1,3 @@
-# Installing mods:
 ```
 └📁 DeathRoadToCanada
   └📁 data

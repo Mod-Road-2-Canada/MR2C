@@ -14,7 +14,7 @@
 </script>
 
 
-<div class="p-3 overflow-auto" style="height: 60vh;">
+<div class="p-3 overflow-auto" style="height: 70vh;">
 	<div class="prose" style="max-width: none;">
 		<SvelteMarkdown source={readme} />
 	</div>
