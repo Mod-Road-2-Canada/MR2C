@@ -94,10 +94,11 @@
 			{#if $GFX_FOLDER != ""}
 				<button class="btn btn-primary" on:click={backupGFX}>Back up</button>
 			{/if}
-			<!-- <button class="btn" on:click={setCWD} >CWD</button> -->
+			<!-- For testing only -->
+			<button class="btn" on:click={setCWD} >CWD</button>
+			<!-- For testing only -->
 		</div>
 	</div>
-	<!-- For testing only -->
 </div>
 
 <div class="overflow-auto border-t-2 border-accent collapse collapse-arrow" >

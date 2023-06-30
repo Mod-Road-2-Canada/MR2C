@@ -85,7 +85,7 @@ pub fn load_mod(mod_file: &str, mod_tag: &str, gfx_modded: &str, gfx_vanilla: &s
 
 	scope.push("RESULT", "");
 
-	scope.push_constant("mod_tag", format!("(* {} *) ", mod_tag));
+	scope.push_constant("mod_tag", mod_tag.to_string());
 	scope.push_constant("mod_install_state", mod_install_state);
 	scope.push_constant("gfx_modded", gfx_modded.to_string());
 	scope.push_constant("gfx_vanilla", gfx_vanilla.to_string());

@@ -24,12 +24,15 @@ Each mod should have 2 files:
 ### Variables
 | Name        | Type    | Use                                                                    |
 |-------------|---------|------------------------------------------------------------------------|
-| `File`      | string  | File path to the vanilla file you want to edit <br/> (Relative to `📁 DeathRoadToCanada`folder)                         |
+| `File`      | string  | File path to the vanilla file you want to edit <br/> (Relative to `📁 DeathRoadToCanada`folder) |
 | `Search`    | string  | Line(s) to search for                                                  |
 | `Add`       | string  | Line(s) to insert above/below the `Search`                             |
-| `Above`     | boolean | true for above insert. Default is false (below).                                      |
+| `Above`     | boolean | true for above insert. Default is false (below).                       |
 | `GfxFolder` | string  | File path to **your mod** gfx folder                                   |
 | `IndexFile` | string  | File path to generate the file containing index of your modded sprites |
+
+* Every variable is **mandatory**, except for `Above` (Default is false).
+
 ### Commands
 `Save_This.`: For editing text files.
 
@@ -51,6 +54,7 @@ Each mod should have 2 files:
 ### 2. *.dfmod* file:
 Injecting code into vanilla file:
 ```ts
+File	= "./deathforth/decks.df";
 Search	= "uses don/events/don-common.df";
 Add	  = "uses ../mods/mod-doc-head/docevents.df";
 Above	= false;
@@ -66,6 +70,7 @@ Add		= `
 1 WEAPON_CURSEDHEAD trunk.weapon+
 1 WEAPON_CURSEDHEAD trunk.weapon+
 `;
+
 Save_This.
 ```
 

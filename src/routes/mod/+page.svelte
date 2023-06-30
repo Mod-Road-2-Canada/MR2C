@@ -140,35 +140,38 @@
 
 </script>
 
-<div class="p-3" style="height: 60vh;">
-	<div class="grid grid-cols-12 gap-3">
-		<div class="col-span-8 border rounded-xl p-2" style="height: 55vh; overflow: overlay;">
-			{#each $MODS as mod}
-				<div class="form-control">
-					<label class="label justify-normal">
-						<input class="checkbox me-3 checkbox-primary"
-							type=checkbox 
-							bind:checked={mod.checked} value={mod}
-						/>
-						<span class="label-text">{mod.name}</span>
-					</label>
-				</div>		
-			{/each}
-		</div>
 
-		<div class="col-span-4">
-			{#if $GFX_FOLDER != ""}
-				{#if modcount > 0}
-					<button class="btn btn-accent btn-outline mb-2 btn-sm sm:btn-md" on:click={getJsons} >Refresh List</button>
-					<button class="btn btn-primary" on:click={promiseMods} disabled={isLoadingMods} >Load Selected Mods</button>
-				{:else}
-					<button class="btn" on:click={getJsons} >Load Mods</button>
-				{/if}
-				<h6>{modcount}</h6>
+<div class="grid grid-cols-12 gap-3 h-full p-3">
+	<div class="col-span-8 border rounded-xl p-2" style="overflow: overlay;">
+		{#each $MODS as mod}
+			<div class="form-control">
+				<label class="label justify-normal">
+					<input class="checkbox me-3 checkbox-primary"
+						type=checkbox 
+						bind:checked={mod.checked} value={mod}
+					/>
+					<span class="label-text">{mod.name}</span>
+				</label>
+			</div>		
+		{/each}
+	</div>
+
+	<div class="col-span-4 flex flex-col justify-between gap-3">
+		{#if $GFX_FOLDER != ""}
+			{#if modcount > 0}
+				<button class="btn btn-accent btn-outline btn-sm sm:btn-md" on:click={getJsons} >Refresh List</button>
+				<button class="btn btn-primary" on:click={promiseMods} disabled={isLoadingMods} >Load Selected Mods</button>
+			{:else}
+				<button class="btn" on:click={getJsons} >Load Mods</button>
 			{/if}
-		</div>
+			<div class="border rounded-xl p-2 grow">
+				<h6>{modcount}</h6>
+			</div>
+			<a  class="btn btn-primary" href="steam://launch/252610">Run From Steam</a>
+		{/if}
 	</div>
 </div>
+
 
 <style>
 	section {

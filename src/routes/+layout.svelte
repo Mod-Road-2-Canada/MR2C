@@ -25,4 +25,6 @@
 	<CustomTab href='/tools'>Help</CustomTab>
 </div>
 
-<slot />
+<div style="height: 70vh;">
+	<slot />
+</div>

@@ -7,11 +7,33 @@ use crate::errorwrap::Error;
 pub const INSTALL: u8 = 1;	// Bitwise value
 pub const REMOVE: u8 = 2;
 
-pub fn save(file_name: &str, str_add: &str, str_search: &str, str_above: bool, mod_tag: &str, mod_install_state: u8) -> Result<(), Error> {
-	// println!("{}\n{}\n{}\n{}\n{}\n", file_name, str_add, str_search, str_above, mod_tag); // Debug
-	let file_temp = format!("{}.temp", file_name);
 
-	{
+fn count_between_substr_newline(string: &str, substring: &str) -> usize {
+	if let Some(substring_index) = string.find(substring) {
+		let substring_end = substring_index + substring.len();
+
+		println!("---Checking ::{} ::{}", &string, &substring);
+
+		if let Some(newline_index) = string[substring_end..].find('\n') {
+			let count = string[substring_end..substring_end + newline_index]
+				// .trim()
+				.chars()
+				.count();
+
+			return count;
+		}
+	}
+
+	0
+}
+
+pub fn save(file_name: &str, str_add: &str, str_search: &str, str_above: bool, mod_tag_o: &str, mod_install_state: u8) -> Result<(), Error> {
+	// println!("{}\n{}\n{}\n{}\n{}\n", file_name, str_add, str_search, str_above, mod_tag_o); // Debug
+	let file_temp = format!("{}.temp", file_name);
+	let mod_tag_newline = format!("\n(* {} nl *) ", mod_tag_o);
+	let mod_tag = format!("(* {} *) ", mod_tag_o);
+
+	{	// file only exist within scope
 		let file = File::open(file_name)?;
 		let out_file = File::create(&file_temp)?;
 
@@ -23,23 +45,34 @@ pub fn save(file_name: &str, str_add: &str, str_search: &str, str_above: bool, m
 
 			contents = reader.lines()
 				.map(|line| line.unwrap())
-				.filter(|line| !line.contains(mod_tag))
+				.filter(|line| !line.contains(&mod_tag))
 				.collect::<Vec<_>>()
 				.join("\n");
+
+			contents = contents.replace(&mod_tag_newline, "");
+			// Remove the inserted newline to separate from the mod (if inserted)
 
 		} else if mod_install_state == INSTALL {
 			reader.read_to_string(&mut contents)?;
 			let str_replace: String;
 			let mut str_add = concat_string!(mod_tag, str_add);
-			str_add = str_add.replace("\n", &concat_string!("\n", mod_tag));
+			str_add = str_add.replace("\n", &concat_string!("\n", mod_tag)); // Add tag for each additional multilines
 
 			if str_above {
+				// Above go above all else (no pun intended)
 				str_replace = concat_string!(str_add, "\n", str_search);
 			} else {
-				str_replace = concat_string!(str_search, "\n", str_add);
+				if count_between_substr_newline(&contents, &str_search) > 0 {
+					// Case when want to insert
+					str_replace = concat_string!(str_search, "\n", str_add, mod_tag_newline);
+				} else {
+					str_replace = concat_string!(str_search, "\n", str_add);	
+				}
 			}
 
 			contents = contents.replace(str_search, &str_replace);
+			// println!("Replace: {}", str_search);
+			// println!("With: {}", str_replace);
 		}
 
 		writer.write_all(contents.as_bytes())?;
