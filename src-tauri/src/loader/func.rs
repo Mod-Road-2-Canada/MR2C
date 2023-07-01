@@ -7,12 +7,17 @@ use crate::errorwrap::Error;
 pub const INSTALL: u8 = 1;	// Bitwise value
 pub const REMOVE: u8 = 2;
 
+pub enum SavePosition {
+	BELOW,
+	ABOVE,
+	BOTTOM,
+}
 
 fn count_between_substr_newline(string: &str, substring: &str) -> usize {
 	if let Some(substring_index) = string.find(substring) {
 		let substring_end = substring_index + substring.len();
 
-		println!("---Checking ::{} ::{}", &string, &substring);
+		// println!("---Checking ::{} ::{}", &string, &substring);
 
 		if let Some(newline_index) = string[substring_end..].find('\n') {
 			let count = string[substring_end..substring_end + newline_index]
@@ -27,8 +32,8 @@ fn count_between_substr_newline(string: &str, substring: &str) -> usize {
 	0
 }
 
-pub fn save(file_name: &str, str_add: &str, str_search: &str, str_above: bool, mod_tag_o: &str, mod_install_state: u8) -> Result<(), Error> {
-	// println!("{}\n{}\n{}\n{}\n{}\n", file_name, str_add, str_search, str_above, mod_tag_o); // Debug
+pub fn save(file_name: &str, str_add: &str, str_search: &str, str_position: SavePosition, mod_tag_o: &str, mod_install_state: u8) -> Result<(), Error> {
+	// println!("{}\n{}\n{}\n{}\n{}\n", file_name, str_add, str_search, str_position, mod_tag_o); // Debug
 	let file_temp = format!("{}.temp", file_name);
 	let mod_tag_newline = format!("\n(* {} nl *) ", mod_tag_o);
 	let mod_tag = format!("(* {} *) ", mod_tag_o);
@@ -54,23 +59,36 @@ pub fn save(file_name: &str, str_add: &str, str_search: &str, str_above: bool, m
 
 		} else if mod_install_state == INSTALL {
 			reader.read_to_string(&mut contents)?;
-			let str_replace: String;
 			let mut str_add = concat_string!(mod_tag, str_add);
 			str_add = str_add.replace("\n", &concat_string!("\n", mod_tag)); // Add tag for each additional multilines
 
-			if str_above {
-				// Above go above all else (no pun intended)
-				str_replace = concat_string!(str_add, "\n", str_search);
-			} else {
-				if count_between_substr_newline(&contents, &str_search) > 0 {
-					// Case when want to insert
-					str_replace = concat_string!(str_search, "\n", str_add, mod_tag_newline);
-				} else {
-					str_replace = concat_string!(str_search, "\n", str_add);	
-				}
-			}
+			match str_position {
+				SavePosition::BOTTOM => {
+					contents = concat_string!(contents, "\n", str_add);
+				},
 
-			contents = contents.replace(str_search, &str_replace);
+				SavePosition::ABOVE | SavePosition::BELOW => { 
+					let str_replace: String;
+
+					str_replace = match str_position {
+						SavePosition::ABOVE => 
+							// Case adding above
+							concat_string!(str_add, "\n", str_search),
+
+						SavePosition::BELOW => 
+							if count_between_substr_newline(&contents, &str_search) > 0 {
+								// Case when want to insert
+								concat_string!(str_search, "\n", str_add, mod_tag_newline)
+							} else {
+								concat_string!(str_search, "\n", str_add)
+							},
+
+						_ => custombail!("SAVE: THIS SAVE POSITION WAS NOT SUPPOSED TO HAPPEN"), // ERROR
+					};
+					
+					contents = contents.replace(str_search, &str_replace)
+				},
+			}
 			// println!("Replace: {}", str_search);
 			// println!("With: {}", str_replace);
 		}

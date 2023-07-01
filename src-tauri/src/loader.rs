@@ -2,10 +2,18 @@ use rhai::{Engine, Scope};
 
 use crate::errorwrap::Error;
 mod func;
-use func::{save, merge_all_img_to_gfx, overlap_in_images, REMOVE};
+use func::{save, merge_all_img_to_gfx, overlap_in_images, REMOVE, SavePosition};
 
-fn wrapper_save(file_name: &str, str_add: &str, str_search: &str, str_above: bool, mod_tag: &str, mod_install_state: u8) -> String {
-	let result = save(file_name, str_add, str_search, str_above, mod_tag, mod_install_state);
+fn wrapper_save(file_name: &str, str_add: &str, str_search: &str, str_above: bool, str_bottom: bool, mod_tag: &str, mod_install_state: u8) -> String {
+	let str_position = match str_bottom {
+		true => SavePosition::BOTTOM,
+		false => match str_above {
+			true => SavePosition::ABOVE,
+			false => SavePosition::BELOW,
+		},
+	};
+
+	let result = save(file_name, str_add, str_search, str_position, mod_tag, mod_install_state);
 	match result {
 		Ok(()) => "".to_string(),
 		Err(e) => format!("{}", e),
@@ -35,16 +43,6 @@ fn wrapper_overlap(original_img: &str, on_top_img: &str, mod_install_state: u8) 
 		"".to_string()
 	}
 }
-
-/*
-fn wrapper_save(file_name: &str, str_add: &str, str_search: &str, str_above: bool, mod_tag: &str, mod_install_state: u8) -> String {
-	let result = save(file_name, str_add, str_search, str_above, mod_tag, mod_install_state);
-	match result {
-		Ok(()) => "".to_string(),
-		Err(e) => format!("{}", e),
-	}
-} */
-
 
 
 macro_rules! throw_on_err {
@@ -79,6 +77,7 @@ pub fn load_mod(mod_file: &str, mod_tag: &str, gfx_modded: &str, gfx_vanilla: &s
 	scope.push("Add", "");
 	scope.push("Search", "");
 	scope.push("Above", false);
+	scope.push("Bottom", false);
 
 	scope.push("GfxFolder", "");
 	scope.push("IndexFile", "");
@@ -93,7 +92,7 @@ pub fn load_mod(mod_file: &str, mod_tag: &str, gfx_modded: &str, gfx_vanilla: &s
 	// Read the script
 	println!("{:?}", std::env::current_dir()?.display());
 	let mut script = std::fs::read_to_string(mod_file)?;
-	script = script.replace("Save_This.", throw_on_err!("Savefile(File, Add, Search, Above, mod_tag, mod_install_state);") );
+	script = script.replace("Save_This.", throw_on_err!("Savefile(File, Add, Search, Above, Bottom, mod_tag, mod_install_state);") );
 	script = script.replace("Merge_This.", throw_on_err!("Mergefile(GfxFolder, gfx_modded, gfx_vanilla, IndexFile, mod_install_state);") );
 	script = script.replace("Overlap_This.", throw_on_err!("Overlapfile(File, Add, mod_install_state);") );
 

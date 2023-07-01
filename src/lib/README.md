@@ -27,11 +27,13 @@ Each mod should have 2 files:
 | `File`      | string  | File path to the vanilla file you want to edit <br/> (Relative to `📁 DeathRoadToCanada`folder) |
 | `Search`    | string  | Line(s) to search for                                                  |
 | `Add`       | string  | Line(s) to insert above/below the `Search`                             |
-| `Above`     | boolean | true for above insert. Default is false (below).                       |
+| `Bottom`    | boolean | Set _true_ to insert at bottom of `File`. Will skip `Above` and `Search` if _true_. Default is _false_. |
+| `Above`     | boolean | Set _true_ to insert above `Search` string. Default is _false_ (below).  |
 | `GfxFolder` | string  | File path to **your mod** gfx folder                                   |
 | `IndexFile` | string  | File path to generate the file containing index of your modded sprites |
 
 * Every variable is **mandatory**, except for `Above` (Default is false).
+The modloader will `Add` your content to a new line above or below the line containing `Search` string so you won't need to worry about adding extra lines.
 
 ### Commands
 `Save_This.`: For editing text files.
@@ -58,6 +60,15 @@ File	= "./deathforth/decks.df";
 Search	= "uses don/events/don-common.df";
 Add	  = "uses ../mods/mod-doc-head/docevents.df";
 Above	= false;
+
+Save_This.
+```
+
+Add code into bottom of file:
+```ts
+File	= "./deathforth/boot.df";
+Add	  = "uses ../mods/mod-new/boot.df";
+Bottom	= true;
 
 Save_This.
 ```
