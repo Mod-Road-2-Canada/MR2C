@@ -35,7 +35,7 @@
 				"icons/icon.icns",
 				"icons/icon.ico"
 			],
-			"identifier": "com.tauri.dr2c.installer",
+			"identifier": "com.tauri.drtc.installer",
 			"longDescription": "",
 			"macOS": {
 				"entitlements": null,
