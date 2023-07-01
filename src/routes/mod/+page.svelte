@@ -14,7 +14,7 @@
 	async function getJsons () {
 		try {
 			const modRawArray = await invoke('get_jsons', {modFolder: MOD_FOLDER});
-			let tempMods = $MODS;
+			let tempMods = [];
 
 			for (var i = 0; i < modRawArray.length; i+=2) {
 				const new_mod = JSON.parse(modRawArray[i + 1]);
@@ -51,12 +51,14 @@
 				}
 			}
 
-			MODS.set(tempMods);
+			$MODS = tempMods;
 			toast.success("Mod list refreshed.");
 		} catch (err) {
 			toast.error(err);
 			console.error(err);
 		}
+
+		await saveData();
 	}
 
 	export async function saveData () {
