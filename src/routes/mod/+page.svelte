@@ -138,13 +138,17 @@
 		}, 5000);
 	}
 
+	let modfocus = undefined;
+	function handleMouseOver(i) {
+		modfocus = $MODS.at(i);
+	}
 </script>
 
 
 <div class="grid grid-cols-12 gap-3 h-full p-3">
 	<div class="col-span-8 border rounded-xl p-2" style="overflow: overlay;">
-		{#each $MODS as mod}
-			<div class="form-control">
+		{#each $MODS as mod, i}
+			<div class="form-control hover:bg-neutral-focus rounded-xl" on:mouseover={() => handleMouseOver(i)}>
 				<label class="label justify-normal">
 					<input class="checkbox me-3 checkbox-primary"
 						type=checkbox 
@@ -165,9 +169,14 @@
 				<button class="btn" on:click={getJsons} >Load Mods</button>
 			{/if}
 			<div class="border rounded-xl p-2 grow">
-				<h6>{modcount}</h6>
+				{#if modfocus !== undefined}
+					<h3 class="text-lg text-center mb-3">{modfocus.name}</h3>
+					<p><b>Version: </b>{modfocus.version}</p>
+					<p><b>Creator: </b>{modfocus.creator}</p>
+				{/if}
+				<!-- <h6 class="inline-block align-text-bottom">Mod count: {modcount}</h6> -->
 			</div>
-			<a  class="btn btn-primary" href="steam://launch/252610">Run From Steam</a>
+			<a  class="btn btn-secondary btn-outline" href="steam://launch/252610">Run From Steam</a>
 		{/if}
 	</div>
 </div>
