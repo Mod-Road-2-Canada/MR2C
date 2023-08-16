@@ -87,8 +87,8 @@ Save_This.
 
 Merging spritesheets:
 ```ts
-GfxFolder	= "./mods/gfx";
-IndexFile	= "./mods/At Me/alex.df";
+GfxFolder	= "./mods/Mod Name/gfx";
+IndexFile	= "./mods/Mod Name/alex.df";
 
 Merge_This.
 ```

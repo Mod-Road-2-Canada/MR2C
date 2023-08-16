@@ -16,39 +16,50 @@
 			const modRawArray = await invoke('get_jsons', {modFolder: MOD_FOLDER});
 			let tempMods = [];
 
-			for (var i = 0; i < modRawArray.length; i+=2) {
+			for (var i = 0; i < modRawArray.length; i += 2) {
 				const new_mod = JSON.parse(modRawArray[i + 1]);
+				new_mod.filename = modRawArray[i];
 
 				if (!new_mod.hasOwnProperty('path')) {
-					toast.error("JSON: Mod with no path: " + modRawArray[i]);
+					toast.error("JSON: Mod with no path: " + new_mod.filename);
 					continue;
 				}
 
 				if (!new_mod.hasOwnProperty('version')) {
-					toast.error("JSON: Mod with no version: " + modRawArray[i]);
+					toast.error("JSON: Mod with no version: " + new_mod.filename);
+					continue;
+				}
+
+				let existmod = tempMods.find(m => m.tag === new_mod.tag);
+				if (existmod !== undefined) { // Same tag name
+					toast.error("JSON: Conflicting mod tags with: '" + existmod.name + "' and '" + new_mod.name + "'" 
+						+ "\n(" + new_mod.tag + ")");
 					continue;
 				}
 
 				if (!new_mod.hasOwnProperty('name')) {
-					toast.error("JSON: Mod with no name: '" + modRawArray[i] + "'");
-					new_mod.name = modRawArray[i];
+					toast.error("JSON: Mod with no name: '" + new_mod.filename + "'");
+					new_mod.name = new_mod.filename;
 				}
 
 				if (!new_mod.hasOwnProperty('tag')) {
-					new_mod.tag = modRawArray[i];
+					new_mod.tag = new_mod.filename;
 				}
 
-				let existmod = tempMods.find(m => m.name === new_mod.name);
-				if (existmod !== undefined) {
-					existmod = Object.assign(existmod, new_mod);
-				} else {
-					let existtag = tempMods.find(m => m.tag === new_mod.tag)
-					if (existtag !== undefined) {
-						toast.error("JSON: Conflicting mod tags: '" + modRawArray[i] + "' and '" + m.name + "'");
-					}
-
-					tempMods.push(new_mod);		
+				let existname = tempMods.find(m => m.name === new_mod.name);
+				if (existname !== undefined) {
+					toast.error("Warning: JSON: Same mod name for different mods, added -alt: '" + new_mod.name + "'");
+					new_mod.name += "-alt";
 				}
+
+				// Add checked
+				let loadedmod = $MODS.find(m => m.tag === new_mod.tag);
+				if (loadedmod !== undefined) {
+					new_mod.checked = loadedmod.checked;
+				}
+
+				// Only add when tag is not the same
+				tempMods.push(new_mod);
 			}
 
 			$MODS = tempMods;
@@ -74,7 +85,6 @@
 			console.error(err);
 		}
 	}
-
 
 
 
@@ -168,7 +178,7 @@
 				<button class="btn btn-accent btn-outline btn-sm sm:btn-md" on:click={getJsons} >Refresh List</button>
 				<button class="btn btn-primary" on:click={promiseMods} disabled={isLoadingMods} >Load Selected Mods</button>
 			{:else}
-				<button class="btn" on:click={getJsons} >Load Mods</button>
+				<p>Please follow the instructions in the Home tab to proceed.</p>
 			{/if}
 			<div class="border rounded-xl p-2 grow">
 				{#if modfocus !== undefined}
@@ -185,15 +195,4 @@
 
 
 <style>
-	section {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		flex: 0.6;
-	}
-
-	h1 {
-		width: 100%;
-	}
 </style>

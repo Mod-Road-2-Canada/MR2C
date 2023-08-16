@@ -99,9 +99,9 @@
 	</div>
 </div>
 
-<div class="overflow-auto border-t-2 border-accent collapse collapse-arrow" >
+<div class="overflow-auto border-t-2 border-accent collapse collapse-arrow hover:bg-neutral-focus" >
 	<input type="checkbox" />
-	<h1 class="collapse-title text-xl font-bold">Installing mods</h1>
+	<h1 class="collapse-title text-xl font-bold">How to install mods</h1>
 	<div class="prose collapse-content overflow-auto " style="max-width: none; height: 45vh">
 		<SvelteMarkdown source={readme} />
 	</div>

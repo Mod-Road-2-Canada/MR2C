@@ -2,7 +2,9 @@ use rhai::{Engine, Scope};
 
 use crate::errorwrap::Error;
 mod func;
-use func::{save, merge_all_img_to_gfx, overlap_in_images, REMOVE, SavePosition};
+mod image_processing;
+use func::{save, REMOVE, SavePosition};
+use image_processing::{merge_all_img_to_gfx, overlap_in_images};
 
 fn wrapper_save(file_name: &str, str_add: &str, str_search: &str, str_above: bool, str_bottom: bool, mod_tag: &str, mod_install_state: u8) -> String {
 	let str_position = match str_bottom {
