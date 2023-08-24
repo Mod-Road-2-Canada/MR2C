@@ -19,6 +19,9 @@ use hook::{
 	save_cookies, 
 	load_cookies, 
 	get_jsons, 
+	check_exist,
+	check_file_in_cwd,
+
 	copy_dir_all,
 	crop_all_img_to_gfx
 };
@@ -34,6 +37,9 @@ fn main() {
 			save_cookies, 
 			load_cookies, 
 			get_jsons, 
+			check_exist,
+			check_file_in_cwd,
+
 			copy_dir_all,
 			crop_all_img_to_gfx,
 

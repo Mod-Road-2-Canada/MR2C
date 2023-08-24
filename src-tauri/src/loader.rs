@@ -3,6 +3,7 @@ use rhai::{Engine, Scope};
 use crate::errorwrap::Error;
 mod func;
 mod image_processing;
+mod image_constant;
 use func::{save, REMOVE, SavePosition};
 use image_processing::{merge_all_img_to_gfx, overlap_in_images};
 
@@ -105,7 +106,7 @@ pub fn load_mod(mod_file: &str, mod_tag: &str, gfx_modded: &str, gfx_vanilla: &s
 
 	match reslut {
 		Ok(_) => Ok(()),	// Code error
-		Err(e) => Err(Error::Script(format!("{}", e))),							// Script parsing error
+		Err(e) => Err(Error::ModScriptError(format!("{}", e))),							// Script parsing error
 	}
 }
 /*

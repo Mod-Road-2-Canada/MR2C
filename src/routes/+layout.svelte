@@ -5,6 +5,8 @@
 	import banner from '$lib/images/banner.png';
 	import { Toaster } from 'svelte-french-toast';
 
+	import { COOKIES_LOADED } from '$lib/stores';
+
 	let toastNewDefault = {
 		success: {
 			position: "top-right",
@@ -21,8 +23,10 @@
 	<Toaster toastOptions={toastNewDefault}/>
 
 	<CustomTab href='/'>Home</CustomTab>
-	<CustomTab href='/mod'>Install Mods</CustomTab>
-	<CustomTab href='/tools'>Help</CustomTab>
+	{#if $COOKIES_LOADED}
+		<CustomTab href='/mod'>Install Mods</CustomTab>
+		<CustomTab href='/tools'>Help</CustomTab>
+	{/if}
 </div>
 
 <div style="height: 70vh;">

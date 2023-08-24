@@ -56,8 +56,26 @@ pub fn crop_all_img_to_gfx(modded_dir: &str, backup_dir: &str, dest_dir: &str) -
 
 
 
+fn check_two_dir_name(src: &str, dst: &str) -> Result<(), Error> {
+	let src_path = Path::new(src);
+	let dst_path = Path::new(dst);
+	if let (Some(src_name), Some(dst_name)) = (src_path.file_name(), dst_path.file_name()) {
+		if src_name != dst_name {
+			custombail!("Chosen folder name is not '{}'", dst_name.to_string_lossy().into_owned());
+		}
+	} else {
+		custombail!("Unrecoverable error?");
+	}
+
+	Ok(())
+}
+
 #[tauri::command]
 pub fn copy_dir_all(src: &str, dst: &str, overwrite: bool) -> Result<u16, Error> {
+
+	// Check if name is the same
+	check_two_dir_name(src, dst)?;
+	// Create folder
 	fs::create_dir_all(dst)?;
 
 	let mut countdir = 0;
@@ -124,6 +142,26 @@ pub fn get_jsons(mod_folder: &str) -> Result<Vec<String>, Error> {
 	Ok(vec_jsons)
 }
 
+// General fs
+#[tauri::command]
+pub fn check_file_in_cwd(file_path: &str) -> bool {
+	if let Ok(current_dir) = std::env::current_dir() {
+		if let Some(path) = Path::new(file_path).parent() {
+			return path == current_dir;
+		}
+	}
+
+	false
+}
+
+#[tauri::command]
+pub fn check_exist(file_path: &str) -> bool {
+	match fs::metadata(file_path) {
+		Ok(_) => true,
+		Err(_) => false,
+	}
+}
+
 #[tauri::command]
 pub fn get_cwd() -> Result<PathBuf, Error> {
 	let path = std::env::current_dir()?;
@@ -148,3 +186,5 @@ pub fn save_cookies(data: &str, file: &str) -> Result<(), Error> {
 	println!("Writen {} {}", 	std::env::current_dir().unwrap().display(), file);
 	Ok(())
 }
+
+

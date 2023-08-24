@@ -1,91 +1,16 @@
 <script lang='ts'>
-	import { GFX_FOLDER, BACKUP_GFX_FOLDER, DATA_FILE, MODS } from '$lib/stores.ts';
+	import { GFX_FOLDER, BACKUP_GFX_FOLDER, MODS } from '$lib/stores';
+	import { ModStatus } from '$lib/types';
 
 	import { invoke } from '@tauri-apps/api/tauri';
-
 	import toast from 'svelte-french-toast';
 
-	const MOD_FOLDER = "mods";
+	import SaverLoader from '../SaverLoader.svelte';
+	let saverloader;
 
 	$: modcount = $MODS.length;
 	$: selectedMods = $MODS.filter(m => m.checked === true);
 	$: { console.log(selectedMods); }
-
-	async function getJsons () {
-		try {
-			const modRawArray = await invoke('get_jsons', {modFolder: MOD_FOLDER});
-			let tempMods = [];
-
-			for (var i = 0; i < modRawArray.length; i += 2) {
-				const new_mod = JSON.parse(modRawArray[i + 1]);
-				new_mod.filename = modRawArray[i];
-
-				if (!new_mod.hasOwnProperty('path')) {
-					toast.error("JSON: Mod with no path: " + new_mod.filename);
-					continue;
-				}
-
-				if (!new_mod.hasOwnProperty('version')) {
-					toast.error("JSON: Mod with no version: " + new_mod.filename);
-					continue;
-				}
-
-				let existmod = tempMods.find(m => m.tag === new_mod.tag);
-				if (existmod !== undefined) { // Same tag name
-					toast.error("JSON: Conflicting mod tags with: '" + existmod.name + "' and '" + new_mod.name + "'" 
-						+ "\n(" + new_mod.tag + ")");
-					continue;
-				}
-
-				if (!new_mod.hasOwnProperty('name')) {
-					toast.error("JSON: Mod with no name: '" + new_mod.filename + "'");
-					new_mod.name = new_mod.filename;
-				}
-
-				if (!new_mod.hasOwnProperty('tag')) {
-					new_mod.tag = new_mod.filename;
-				}
-
-				let existname = tempMods.find(m => m.name === new_mod.name);
-				if (existname !== undefined) {
-					toast.error("Warning: JSON: Same mod name for different mods, added -alt: '" + new_mod.name + "'");
-					new_mod.name += "-alt";
-				}
-
-				// Add checked
-				let loadedmod = $MODS.find(m => m.tag === new_mod.tag);
-				if (loadedmod !== undefined) {
-					new_mod.checked = loadedmod.checked;
-				}
-
-				// Only add when tag is not the same
-				tempMods.push(new_mod);
-			}
-
-			$MODS = tempMods;
-			toast.success("Mod list refreshed.");
-		} catch (err) {
-			toast.error(err);
-			console.error(err);
-		}
-
-		await saveData();
-	}
-
-	export async function saveData () {
-		try {
-			const cookies = {
-				gfx_dir: $GFX_FOLDER,
-				modlist: $MODS,
-			}
-			await invoke('save_cookies', {data: JSON.stringify(cookies), file: DATA_FILE});
-			toast.success("Session saved.");
-		} catch (err) {
-			toast.error("Session not saved." + err);
-			console.error(err);
-		}
-	}
-
 
 
 	async function loadMods () {
@@ -120,7 +45,7 @@
 			}
 		}	
 
-		await saveData();
+		await saverloader.saveData();
 	}
 
   const myPromise = () => {
@@ -157,16 +82,25 @@
 </script>
 
 
+<SaverLoader bind:this={saverloader} />
+
 <div class="grid grid-cols-12 gap-3 h-full p-3">
 	<div class="col-span-8 border rounded-xl p-2" style="overflow: overlay;">
 		{#each $MODS as mod, i}
 			<div class="form-control hover:bg-neutral-focus rounded-xl" on:mouseover={() => handleMouseOver(i)}>
-				<label class="label justify-normal">
-					<input class="checkbox me-3 checkbox-primary"
-						type=checkbox 
-						bind:checked={mod.checked} value={mod}
-					/>
-					<span class="label-text">{mod.name}</span>
+				<label class="label justify-between">
+					<div class="flex items-center">
+						<input class="checkbox me-3 checkbox-primary"
+							type=checkbox 
+							bind:checked={mod.checked} value={mod}
+						/>
+						<span class="label-text">{mod.name}</span>
+					</div>
+					{#if mod.status === ModStatus.Updated}
+						<div class="badge badge-secondary badge-outline">Updated!</div>
+					{:else if mod.status === ModStatus.New}
+						<div class="badge badge-info badge-outline">New!</div>
+					{/if}
 				</label>
 			</div>		
 		{/each}
@@ -175,10 +109,10 @@
 	<div class="col-span-4 flex flex-col justify-between gap-3">
 		{#if $GFX_FOLDER != ""}
 			{#if modcount > 0}
-				<button class="btn btn-accent btn-outline btn-sm sm:btn-md" on:click={getJsons} >Refresh List</button>
+				<button class="btn btn-accent btn-outline btn-sm sm:btn-md" on:click={() => saverloader.refreshJsons()} >Refresh List</button>
 				<button class="btn btn-primary" on:click={promiseMods} disabled={isLoadingMods} >Load Selected Mods</button>
 			{:else}
-				<p>Please follow the instructions in the Home tab to proceed.</p>
+				<p>There must be an error somewhere. Please report back to Hwang on Discord.</p>
 			{/if}
 			<div class="border rounded-xl p-2 grow">
 				{#if modfocus !== undefined}
