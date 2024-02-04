@@ -19,7 +19,7 @@ fn wrapper_save(file_name: &str, str_add: &str, str_search: &str, str_above: boo
 	let result = save(file_name, str_add, str_search, str_position, mod_tag, mod_install_state);
 	match result {
 		Ok(()) => "".to_string(),
-		Err(e) => format!("{}", e),
+		Err(e) => format!("(save) {}", e),
 	}
 }
 

@@ -1,4 +1,4 @@
-use super::image_constant::{get_sprite_size_map};
+use super::image_constant::{summon_sprite_size_map};
 
 use crate::errorwrap::{Error, ModScriptError};
 
