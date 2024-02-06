@@ -7,7 +7,7 @@ export default {
 	daisyui: {
 		themes: [
 			{
-				mytheme: {
+				apocalypse: {
 					"primary": "#8C0327",	
 					"secondary": "#D85251",		
 					"accent": "#86786A",		

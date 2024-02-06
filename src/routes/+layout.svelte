@@ -2,6 +2,9 @@
 	import '$lib/app.css'
 
 	import CustomTab from './CustomTab.svelte';
+
+	import SideWrapper from './docs/SideWrapper.svelte';
+	import DarkLightToggle from './DarkLightToggle.svelte'
 	import banner from '$lib/images/banner.png';
 	import { Toaster } from 'svelte-french-toast';
 
@@ -21,19 +24,26 @@
 		$: console.log($page);
 </script>
 
+<SideWrapper>
 
-<!-- <img src={banner} alt="Banner for mod installer" style="width: 100%; height: 35vh; object-fit: cover;"/> -->
-<div role="tablist" class="tabs align-items-end tabs-lg"  
+<div class="flex align-items-end"  
 	style="background: url({banner}) no-repeat center; background-size: cover; height: 30vh;">
+
 	<Toaster toastOptions={toastNewDefault}/>
 
-	<CustomTab href='/'>Home</CustomTab>
-	<!-- {#if $COOKIES_LOADED} -->
-		<CustomTab href='/mod'>Install Mods</CustomTab>
-		<CustomTab href='/tools'>Help</CustomTab>
-	<!-- {/if} -->
+	<DarkLightToggle />
+
+	<div role="tablist" class="tabs tabs-lifted tabs-lg ">
+		<CustomTab href='/'>Home</CustomTab>
+		<!-- {#if $COOKIES_LOADED} -->
+			<CustomTab href='/mod'>Install Mods</CustomTab>
+			<CustomTab href='/tools'>Help</CustomTab>
+		<!-- {/if} -->
+	</div>
 </div>
 
 <div style="height: 70vh;">
 	<slot />
 </div>
+
+</SideWrapper>

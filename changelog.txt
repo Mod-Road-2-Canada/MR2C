@@ -12,4 +12,5 @@ Feature update:
 - No modloader generator (auto generate needed files)
 - tutorial
 - Tool tips
-- dark/light mode
+x dark/light mode
+- Move documentation/instructions to side menu
