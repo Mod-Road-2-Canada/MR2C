@@ -1,0 +1,14 @@
+TO FIX:
+- session not found
+- refresh mod list on start up
+- Recursion when choosing folder?
+x scrollbar not working
+x tab not showing
+
+
+Feature update:
+- Replacing sprites with specific location
+- File saving HOOK
+- No modloader generator (auto generate needed files)
+- tutorial
+- Tool tips

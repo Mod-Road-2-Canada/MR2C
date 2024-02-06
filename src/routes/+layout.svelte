@@ -16,17 +16,22 @@
 			position: "bottom-right",
 		},	
 	}
+
+		import { page } from '$app/stores';
+		$: console.log($page);
 </script>
 
+
 <!-- <img src={banner} alt="Banner for mod installer" style="width: 100%; height: 35vh; object-fit: cover;"/> -->
-<div class="tabs align-items-end" style="background: url({banner}) no-repeat center; background-size: cover; height: 30vh;">
+<div role="tablist" class="tabs align-items-end tabs-lg"  
+	style="background: url({banner}) no-repeat center; background-size: cover; height: 30vh;">
 	<Toaster toastOptions={toastNewDefault}/>
 
 	<CustomTab href='/'>Home</CustomTab>
-	{#if $COOKIES_LOADED}
+	<!-- {#if $COOKIES_LOADED} -->
 		<CustomTab href='/mod'>Install Mods</CustomTab>
 		<CustomTab href='/tools'>Help</CustomTab>
-	{/if}
+	<!-- {/if} -->
 </div>
 
 <div style="height: 70vh;">

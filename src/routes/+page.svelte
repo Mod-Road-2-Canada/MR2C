@@ -80,6 +80,8 @@
 
 	import SvelteMarkdown from 'svelte-markdown';
 	import readme from '$lib/README_USER.md?raw';
+
+
 </script>
 
 
@@ -101,10 +103,10 @@
 	</div>
 </div>
 
-<div class="overflow-auto border-t-2 border-accent collapse collapse-arrow hover:bg-neutral-focus" >
+<div class="overflow-auto border-t-2 border-accent collapse collapse-arrow" title="wtf">
 	<input type="checkbox" />
-	<h1 class="collapse-title text-xl font-bold">How to install mods</h1>
-	<div class="prose collapse-content overflow-auto " style="max-width: none; height: 45vh">
+	<h1 class="collapse-title text-xl font-bold ">How to install mods</h1>
+	<div class="prose collapse-content overflow-auto" style="max-width: none; height: 45vh">
 		<SvelteMarkdown source={readme} />
 	</div>
 </div>
