@@ -4,7 +4,7 @@ TO FIX:
 - Recursion when choosing folder?
 x scrollbar not working
 x tab not showing
-
+- highlight.js
 
 Feature update:
 - Replacing sprites with specific location
@@ -12,3 +12,4 @@ Feature update:
 - No modloader generator (auto generate needed files)
 - tutorial
 - Tool tips
+- dark/light mode
