@@ -4,10 +4,16 @@ use once_cell::sync::Lazy; // Import Lazy
 pub const SPRITE_TOTAL: usize = 70;
 
 // Define your static variable using Lazy
+// This map is used for getting the size of each sprite in a whole spritesheet
+//   [width, height]
+// OR
+//   [0, sprite_count]
 static SPRITE_NAME_SIZE_MAP: Lazy<IndexMap<&'static str, [u32; 2]>> = Lazy::new(|| {
 	let mut map = IndexMap::new();
 
-	// NOTE: THIS IS ALSO ORDER OF LOADING SPRITES IN THE GAME. DO NOT CHANGE!
+	// NOTE: THIS IS ALSO ORDER OF LOADING SPRITES IN THE GAME. 
+	// DO NOT CHANGE THE ORDER!
+
 		//  gfx\fonts
 	map.insert("font6x8.png", [0, 256]);
 
@@ -50,8 +56,8 @@ static SPRITE_NAME_SIZE_MAP: Lazy<IndexMap<&'static str, [u32; 2]>> = Lazy::new(
 	map.insert("superpets24.png", [24, 24]);
 	map.insert("pets24.png", [24, 24]);
 	map.insert("pets48.png", [48, 48]);
-	// map.insert("hairpalette.png", [1, 1]); // ?
-	// map.insert("skinpalette.png", [1, 1]); // ?
+	// m.insert("hairpalette.png", [1, 1]); // ?
+	// m.insert("skinpalette.png", [1, 1]); // ?
 
 		// gfx\items
 	map.insert("dr2c_weapons.png", [8, 32]);
@@ -60,9 +66,9 @@ static SPRITE_NAME_SIZE_MAP: Lazy<IndexMap<&'static str, [u32; 2]>> = Lazy::new(
 
 	map.insert("dr2c_cityfurniture_16px.png", [16, 16]);
 	map.insert("dr2c_housefurniture_32px.png", [32, 32]);
-	// map.insert("dr2c_cityfurniture_32px.png", [32, 32]);   // ?? Need verification
-	// map.insert("trash16.png", [16, 16]);   // ??
-	// map.insert("trash32.png", [32, 32]);   // ??
+	// m.insert("dr2c_cityfurniture_32px.png", [32, 32]);   // ?? Need verification
+	// m.insert("trash16.png", [16, 16]);   // ??
+	// m.insert("trash32.png", [32, 32]);   // ??
 
 		// gfx\tiles
 	map.insert("buildings.png",      [16, 16]);
@@ -78,7 +84,7 @@ static SPRITE_NAME_SIZE_MAP: Lazy<IndexMap<&'static str, [u32; 2]>> = Lazy::new(
 	map.insert("doors.png",          [16, 16]);
 	map.insert("shelves.png",        [16, 16]);
 
-	// map.insert("custom.png", [16, 16]);        // ??
+	// m.insert("custom.png", [16, 16]);        // ??
 
 		// gfx\items
 	map.insert("special16.png", [16, 16]);
@@ -101,11 +107,11 @@ static SPRITE_NAME_SIZE_MAP: Lazy<IndexMap<&'static str, [u32; 2]>> = Lazy::new(
 	map.insert("dr2c_roadview_all_layers_64px.png", [64, 64]);
 	map.insert("dr2c_roadview_canada_64px.png",     [64, 64]);
 	map.insert("trees_96px.png", [96, 96]);
-	// map.insert("dr2c_roadview_otherstuff_16px.png", [16, 16]); // ??
+	// m.insert("dr2c_roadview_otherstuff_16px.png", [16, 16]); // ??
 
 		// gfx\cars
 	map.insert("dr2c_cars110x96.png", [110, 96]);
-	// map.insert("cars_unique_110x96.png", [110, 96]);   // NOT LOADED
+	// m.insert("cars_unique_110x96.png", [110, 96]);   // NOT LOADED
 	map.insert("car-wrecks124x96.png", [124, 96]);
 
 		// gfx\misc

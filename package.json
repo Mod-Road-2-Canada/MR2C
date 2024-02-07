@@ -31,6 +31,7 @@
   "dependencies": {
     "@tauri-apps/api": "^1.5.3",
     "svelte-french-toast": "^1.2.0",
-    "svelte-markdown": "^0.4.1"
+    "svelte-markdown": "^0.4.1",
+    "vaul-svelte": "^0.2.3"
   }
 }

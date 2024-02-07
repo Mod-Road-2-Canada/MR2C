@@ -2,7 +2,8 @@
 
 /* Style the scrollbar */
 ::-webkit-scrollbar {
-  width: 0.75rem;
+  width: 0.6rem;
+  height: 0.6rem;
 }
 
 ::-webkit-scrollbar-track {
@@ -16,7 +17,7 @@
 }*/
 
 ::-webkit-scrollbar-thumb {
-  background-color: hsl(var(--p));
+  background-color: oklch(var(--p));
   border-radius: 1rem;
 }
 
