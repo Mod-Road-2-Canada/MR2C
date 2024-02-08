@@ -28,8 +28,8 @@ pub enum ModImgError {
 	#[error("Spritesheet not found: {0}")]
 	SpriteMapNotFound(String),
 
-	#[error("Range parse error: {0}")]
-	ExtractRange(String)
+	// #[error("Range parse error: {0}")]
+	// ExtractRange(String)
 }
 
 // we must manually implement serde::Serialize

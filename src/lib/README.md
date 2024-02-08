@@ -53,12 +53,14 @@ Example:
 * **Every variable is required**, except for `Above` (Default is false).
 The modloader will `Add` your content to a new line above or below the line containing `Search` string so you won't need to worry about adding extra lines.
 
+* Empty lines are skipped.
+
 ### 2. Commands
-`Save_This.`: For editing text files.
+`Save_This.`: For editing text files.<br/>
+`Merge_This.`: For combining images.<br/>
+`Overlap_This.`: For overlaying images.<br/>
 
-`Merge_This.`: For combining images.
 
-`Overlap_This.`: For overlaying images.
 
 ### 3. Examples
 

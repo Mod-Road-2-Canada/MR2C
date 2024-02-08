@@ -15,4 +15,5 @@ Feature update:
 - tutorial
 - Tool tips
 x dark/light mode
-- Move documentation/instructions to side menu
+x Move documentation/instructions to side menu
+x window now save size if resized

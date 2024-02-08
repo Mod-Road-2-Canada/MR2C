@@ -17,7 +17,6 @@ use hook::{
 	save_cookies, 
 	load_cookies, 
 	get_jsons, 
-	check_exist,
 	check_file_in_cwd,
 
 	copy_dir_all,
@@ -35,7 +34,6 @@ fn main() {
 			save_cookies, 
 			load_cookies, 
 			get_jsons, 
-			check_exist,
 			check_file_in_cwd,
 
 			copy_dir_all,
@@ -43,6 +41,7 @@ fn main() {
 
 			load_mod
 		])
+		.plugin(tauri_plugin_window_state::Builder::default().build())
 		.run(tauri::generate_context!())
 		.expect("error while running tauri application");
 }

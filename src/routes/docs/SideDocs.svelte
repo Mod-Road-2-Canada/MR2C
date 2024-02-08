@@ -37,20 +37,22 @@
 			<DarkLightToggle />
 
 			<!-- Tab on the side -->
-			<div class="rounded-l-2xl h-24 w-6 absolute bottom-[45%] bg-base-300 -ml-6 flex justify-center items-center border-accent/50 border-2 border-r-0 gap-1">
+			<div class="p-2 -left-8 absolute bottom-[45%]">
+			<div class="rounded-l-2xl h-24 w-6 bg-base-300 flex justify-center items-center border-accent/50 border-2 border-r-0 gap-1">
 				<div class="rounded-full h-16 w-1 bg-base-content/40" />
 				<div class="rounded-full h-16 w-1 bg-base-content/40" />
+			</div>
 			</div>
 
 			<div class="w-full max-w-full overflow-y-auto overflow-x-hidden h-screen">
 				<DocsCollapse title="How to install mods">
-					<div class="prose max-w-full">
+					<div class="prose select-text">
 						<SvelteMarkdown source={playerdocs} />
 					</div>				
 				</DocsCollapse>
 
 				<DocsCollapse title="Documentations">
-					<div class="prose max-w-full">
+					<div class="prose select-text">
 						<SvelteMarkdown source={modderdocs} />
 					</div>				
 				</DocsCollapse>

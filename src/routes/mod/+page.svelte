@@ -1,5 +1,7 @@
 <script lang='ts'>
-	import { GFX_FOLDER, BACKUP_GFX_FOLDER, MODS } from '$lib/stores';
+	import { GFX_FOLDER, MODS } from '$lib/stores';
+	import { BACKUP_GFX_FOLDER } from '$lib/consts';
+	
 	import { ModStatus } from '$lib/types';
 
 	import { invoke } from '@tauri-apps/api/tauri';
@@ -36,7 +38,7 @@
 				await invoke('load_mod', {...modArgs, modInstallState: 2});
 				if (mod.checked) {
 					await invoke('load_mod', {...modArgs, modInstallState: 1});
-					toast.success("Done: " + mod.name, { position: "bottom-right"});
+					toast.success("Loaded: " + mod.name, { position: "bottom-right"});
 				}
 				
 				console.timeEnd(mod.name);
@@ -87,7 +89,11 @@
 <div class="grid grid-cols-12 gap-3 h-full p-3">
 	<div class="col-span-8 border rounded-xl p-2" style="overflow: overlay;">
 		{#each $MODS as mod, i}
-			<div class="form-control hover:bg-neutral-focus rounded-xl" on:mouseover={() => handleMouseOver(i)}>
+			<div class="form-control hover:bg-base-300 rounded-xl" 
+				role="presentation"
+				on:mouseover={() => handleMouseOver(i)} 
+				on:focus={() => handleMouseOver(i)} >
+
 				<label class="label justify-between">
 					<div class="flex items-center">
 						<input class="checkbox me-3 checkbox-primary"

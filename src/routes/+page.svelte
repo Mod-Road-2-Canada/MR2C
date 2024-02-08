@@ -1,5 +1,7 @@
 <script lang='ts'>
-	import { GFX_FOLDER, BACKUP_GFX_FOLDER, COOKIES_LOADED } from '$lib/stores.ts';
+	import { GFX_FOLDER, COOKIES_LOADED } from '$lib/stores';
+	import { BACKUP_GFX_FOLDER } from '$lib/consts';
+
 	import { onMount } from 'svelte';
 	import toast from 'svelte-french-toast';
 	import { invoke } from '@tauri-apps/api/tauri';
@@ -63,6 +65,9 @@
 			let count = await invoke('copy_dir_all', {src: $GFX_FOLDER, dst: BACKUP_GFX_FOLDER, overwrite: false});
 			toast.success(count + " file(s) copied");
 
+			// Only if CWD is available
+			await saverloader.loadData();
+
 			// First time since cookies cannot be loaded
 			if (!$COOKIES_LOADED) {
 				await saverloader.refreshJsons();
@@ -75,7 +80,7 @@
 	}
 
 	onMount(() => {
-		saverloader.loadData(); 
+		saverloader.loadData();
 	});
 
 </script>
@@ -91,7 +96,7 @@
 		<input id="selectGFX" type="button" value="CHOOSE" class="btn join-item file-input-bordered" on:click={getGFX} />
 		<span class="px-3 join-item w-full no-scrollbar overflow-auto self-center">{$GFX_FOLDER}</span>
 		{#if $GFX_FOLDER != ""}
-			<button class="btn join-item btn-primary" on:click={backupGFX}>Back up</button>
+			<button class="btn join-item btn-primary" on:click={backupGFX}>BACK UP</button>
 		{/if}
 		<!-- For testing only -->
 		<button class="btn join-item" on:click={setCWD} >CWD</button>

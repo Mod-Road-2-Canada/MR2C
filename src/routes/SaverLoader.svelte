@@ -1,5 +1,7 @@
 <script lang='ts'>
-	import { GFX_FOLDER, MODS, COOKIES_LOADED, DATA_FILE, MOD_FOLDER} from '$lib/stores.ts';
+	import { GFX_FOLDER, MODS, THEME, COOKIES_LOADED } from '$lib/stores';
+	import { COOKIE_FILE, MOD_FOLDER } from '$lib/consts';
+
 	import type { ModInfo, ModCookies } from '$lib/types';
 	import { ModStatus } from '$lib/types';
 
@@ -53,6 +55,8 @@
 		for (var i = 0; i < modRawArray.length; i += 2) {
 			const new_mod = validateJson(modRawArray[i + 1], modRawArray[i]);
 
+			if (!new_mod) { continue; }
+
 			// Check same tag
 			existmod = tempMods.find(m => m.tag === new_mod.tag);
 			if (existmod !== undefined) { // Same tag name
@@ -64,7 +68,7 @@
 			// Check same name
 			existmod = tempMods.find(m => m.name === new_mod.name);
 			if (existmod !== undefined) {
-				toast.error("Warning: JSON: Same mod name for different mods, added -alt: '" + new_mod.name + "'");
+				toast.error("Same mod name for different mods, added -alt: '" + new_mod.name + "'");
 				new_mod.name += "-alt";
 			}
 
@@ -84,12 +88,14 @@
 			// Add checked status from old mods
 			// Should do nothing if first loaded.
 			for (const newMod of tempMods) {
-				let loadedMod = $MODS.find(m => m.tag === newMod.tag);
-				if (loadedMod !== undefined) {
-					newMod.checked = loadedMod.checked;
+				let oldMod = $MODS.find(m => m.tag === newMod.tag);
+				if (oldMod !== undefined) {
+					newMod.checked = oldMod.checked;
 
-					if (newMod.version !== loadedMod.version) {
+					if (newMod.version !== oldMod.version) {
 						newMod.status = ModStatus.Updated;
+					} else {
+						newMod.status = oldMod.status;
 					}
 				} else {
 					newMod.status = ModStatus.New;
@@ -110,10 +116,11 @@
 	export async function saveData () {
 		try {
 			const cookies = {
+				theme: $THEME,
 				gfx_dir: $GFX_FOLDER,
 				modlist: $MODS,
 			}
-			await invoke('save_cookies', {data: JSON.stringify(cookies), file: DATA_FILE});
+			await invoke('save_cookies', {data: JSON.stringify(cookies), file: COOKIE_FILE});
 			toast.success("Session saved.", { position: "top-left" });
 		} catch (err) {
 			toast.error("Session not saved." + err);
@@ -124,26 +131,26 @@
 	export async function loadData () {
 		if (!$COOKIES_LOADED) {
 			try {
-				const secondTime = await invoke('check_exist', {filePath: DATA_FILE});
+				const cookies_str = await invoke('load_cookies', {file: COOKIE_FILE});
 
-				if (secondTime) {
-					const cookies = JSON.parse(await invoke('load_cookies', {file: DATA_FILE}));
+				if (cookies_str) {
+					const cookies = JSON.parse(cookies_str);
+
 					GFX_FOLDER.set(cookies.gfx_dir);
 					MODS.set(cookies.modlist);
+					$THEME = cookies.theme;
 
 					COOKIES_LOADED.set(true);
 					toast.success("Session loaded.", { position: "top-left" });				
 				} else {
 					// First time openning the app
 					// Do nothing?
-
-					// Don't load cookies
-					console.error("DR2C: FIRST TIME. COOKIES NOT LOADED.");
+					console.warn("DR2C: FIRST TIME. COOKIES NOT LOADED.");
 				}
 
 			} catch (err) {
 				// MAY CAUSE ERRORS LATER ON
-				toast.error("Session not found: " + err);
+				toast.error("Session loading error: " + err);
 				console.error(err);
 			}
 		}

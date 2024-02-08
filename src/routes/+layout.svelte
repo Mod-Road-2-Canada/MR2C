@@ -8,8 +8,12 @@
 	import banner from '$lib/images/banner.png';
 	import { Toaster } from 'svelte-french-toast';
 
-	import { COOKIES_LOADED } from '$lib/stores';
+	import { COOKIES_LOADED, THEME } from '$lib/stores';
 
+	// Automatic change theme
+	$: document.documentElement.setAttribute("data-theme", $THEME);
+
+	// Toast default options
 	let toastNewDefault = {
 		success: {
 			position: "top-right",
@@ -19,9 +23,6 @@
 			position: "bottom-right",
 		},	
 	}
-
-	import { page } from '$app/stores';
-	$: console.log($page);
 
 	let toggle = false;
 </script>
@@ -36,9 +37,9 @@
 
 		<div role="tablist" class="tabs tabs-lifted tabs-lg ">
 			<CustomTab href='/'>Home</CustomTab>
-			<!-- {#if $COOKIES_LOADED} -->
+			{#if $COOKIES_LOADED}
 				<CustomTab href='/mod'>Install Mods</CustomTab>
-			<!-- {/if} -->
+			{/if}
 		</div>
 	</div>
 

@@ -155,14 +155,6 @@ pub fn check_file_in_cwd(file_path: &str) -> bool {
 }
 
 #[tauri::command]
-pub fn check_exist(file_path: &str) -> bool {
-	match fs::metadata(file_path) {
-		Ok(_) => true,
-		Err(_) => false,
-	}
-}
-
-#[tauri::command]
 pub fn get_cwd() -> Result<PathBuf, Error> {
 	let path = std::env::current_dir()?;
 	Ok(path)
@@ -176,8 +168,14 @@ pub fn set_cwd(path_cwd: &str) -> Result<(), Error> {
 
 #[tauri::command]
 pub fn load_cookies(file: &str) -> Result<String, Error> {
-	let cookies = fs::read_to_string(file)?;
-	Ok(cookies)
+	// Return json string if found
+	// empty string otherwise
+
+	match fs::read_to_string(file) {
+		Ok(cookies) => Ok(cookies),
+		Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(String::new()),
+		Err(e) => Err(e.into()),
+	}
 }
 
 #[tauri::command]
