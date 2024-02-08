@@ -1,6 +1,6 @@
 TO FIX:
-x session not found
-- refresh mod list on start up
+x Session not found
+x refresh mod list on start up
 - Recursion when choosing folder?
 x scrollbar not working
 x tab not showing
@@ -17,3 +17,4 @@ Feature update:
 x dark/light mode
 x Move documentation/instructions to side menu
 x window now save size if resized
+- updater?

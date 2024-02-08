@@ -66,28 +66,28 @@ The modloader will `Add` your content to a new line above or below the line cont
 
 * Injecting code into vanilla file:
 ```ts
-File	= "./deathforth/decks.df";
-Search	= "uses don/events/don-common.df";
-Add	  = "uses ../mods/mod-doc-head/docevents.df";
-Above	= false;
+File    = "./deathforth/decks.df";
+Search  = "uses don/events/don-common.df";
+Add     = "uses ../mods/mod-doc-head/docevents.df";
+Above   = false;
 
 Save_This.
 ```
 
 * Add code into bottom of file:
 ```ts
-File	= "./deathforth/boot.df";
-Add	  = "uses ../mods/mod-new/boot.df";
-Bottom	= true;
+File    = "./deathforth/boot.df";
+Add     = "uses ../mods/mod-new/boot.df";
+Bottom  = true;
 
 Save_This.
 ```
 
 * Adding multiple lines:
 ```ts
-File		= "./deathforth/events/common/cyoa-k-newbie.df";
-Search	= "cyoa: starthintme";
-Add		= `
+File    = "./deathforth/events/common/cyoa-k-newbie.df";
+Search  = "cyoa: starthintme";
+Add     = `
 1 WEAPON_CURSEDHEAD trunk.weapon+
 1 WEAPON_CURSEDHEAD trunk.weapon+
 `;
@@ -97,16 +97,16 @@ Save_This.
 
 * Merging spritesheets:
 ```ts
-GfxFolder	= "./mods/Mod Name/gfx";
-IndexFile	= "./mods/Mod Name/alex.df";
+GfxFolder  = "./mods/Mod Name/gfx";
+IndexFile  = "./mods/Mod Name/alex.df";
 
 Merge_This.
 ```
 
 * Overlapping file for individual spritesheet:
 ```ts
-File	= "./gfx/tiles/street.png";
-Add		= "./mods/Clean Road/gfx/tiles/street.png";
+File  = "./gfx/tiles/street.png";
+Add   = "./mods/Clean Road/gfx/tiles/street.png";
 
 Overlap_This.
 ```

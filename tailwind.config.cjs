@@ -8,10 +8,10 @@ export default {
 		themes: [
 			{
 				apocalypse: {
-					"primary": "#8C0327",	
-					"secondary": "#D85251",		
-					"accent": "#86786A",		
-					"neutral": "#3B1F22",		
+					"primary": "#D85251",	
+					"secondary": "#8C0327",
+					"accent": "#B387FA",		
+					"neutral": "#2A323C",		
 					"base-100": "#292524",			
 					"info": "#42ADBB",			
 					"success": "#499380",			
