@@ -1,5 +1,4 @@
 <script>
-	import github from "svelte-highlight/styles/monokai";
 	import Highlight from "svelte-highlight";
 	import typescript from "svelte-highlight/languages/typescript";
 

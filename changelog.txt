@@ -7,8 +7,11 @@ x tab not showing
 - highlight.js
 - Documentation in code (rustdocs)
 - Refactored documentation
+- Path not found? when there's no mods folder (Make a note)
+- Automod? (Experimental)
 
 Feature update:
+- Replacing line???
 - Replacing sprites with specific location
 - File saving HOOK
 - No modloader generator (auto generate needed files)
@@ -17,4 +20,14 @@ Feature update:
 x dark/light mode
 x Move documentation/instructions to side menu
 x window now save size if resized
+- About / suggestion box
 - updater?
+- mod order
+
+Modder QOL
+x blurbs
+x epilogues
+- loot table
+- traders
+- specialbody / head
+- zombie

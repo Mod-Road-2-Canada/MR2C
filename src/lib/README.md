@@ -53,7 +53,15 @@ Example:
 * **Every variable is required**, except for `Above` (Default is false).
 The modloader will `Add` your content to a new line above or below the line containing `Search` string so you won't need to worry about adding extra lines.
 
-* Empty lines are skipped.
+* Empty lines are allowed.
+* Note: The search string should be a full line, otherwise the loader will insert in the middle of a line, which may cause bugs
+This case, the inserted line will be inserted in the middle of a string just after "was finally", causing the string to breaks.
+```
+File	= "./deathforth/events/finale/epilogue-check.df";
+Search	= `<- char ispet? if "was finally`;
+Add		= `<- char .trait@ "New trait" $= if "SOMETHING" then;`;
+Save_This.
+```
 
 ### 2. Commands
 `Save_This.`: For editing text files.<br/>
