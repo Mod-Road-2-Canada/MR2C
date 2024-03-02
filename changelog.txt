@@ -23,11 +23,14 @@ x window now save size if resized
 - About / suggestion box
 - updater?
 - mod order
+- option to SplitLine (to replace)
 
 Modder QOL
 x blurbs
 x epilogues
 - loot table
 - traders
+
+Spritesheet
 - specialbody / head
 - zombie

@@ -1,16 +1,10 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-#[macro_use(concat_string)]
-extern crate concat_string;
-
-
-#[macro_use]
-mod errorwrap;
 mod hook;
-mod loader;
+mod rhai_engine;
 
-use loader::load_mod;
+use rhai_engine::load_mod;
 use hook::{
 	set_cwd, 
 	get_cwd, 

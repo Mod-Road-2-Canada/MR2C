@@ -32,7 +32,6 @@
 					modFile: mod.path, 
 					modTag: mod.tag,
 					gfxModded: $GFX_FOLDER,
-					gfxVanilla: BACKUP_GFX_FOLDER
 				};
 
 				await invoke('load_mod', {...modArgs, modInstallState: 2});

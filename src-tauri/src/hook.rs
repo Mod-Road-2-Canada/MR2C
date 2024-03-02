@@ -5,7 +5,8 @@ use anyhow::Context;
 
 
 
-use crate::errorwrap::Error;
+use app::errorwrap::Error;
+use app::custombail;
 
 
 fn crop_modded_image<P: AsRef<Path>>(modded_path: P, backup_path: P, dest_path: P) -> Result<(), Error> {
