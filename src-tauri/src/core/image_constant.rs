@@ -191,19 +191,21 @@ pub const IDX_TO_SHEET: [&str; SPRITE_TOTAL] = [
 
 
 // Special files are the files that special words are based on.
-// width_count is how many sprite takes up one row
-// E.g. specialbody!, specialhead! uses dr2c_special_chars
-// 		dr2c_special_chars has 7 sprites each row
-pub fn match_special_file(search: &str) -> Option<(String, u32)>  {
-	let (special_name, width_count) = match search {
-		"dr2c_special_chars" => ("MOD_SC", 7),
-		"dr2c_zombie_bodies" => ("MOD_ZBODY",5),
-		"dr2c_zombie_heads"  => ("MOD_ZHEAD",9),
-		_ => ("",0)
+// E.g. .specialbody! .zombiehead!
+// 		dr2c_special_chars has 7 sprites each unit (.specialbody! .specialtype!)
+//		dr2c_zombie_heads has 3 sprites each head (.zombiehead!)
+pub fn match_special_file(search: &str, sprite_count: u32) -> Option<(String, u32)>  {
+	let mut calc_offset: u32 = 0;
+	let special_name: &str = match search {
+		"dr2c_special_chars" => { calc_offset = sprite_count/7+1; "MOD_SC" },	// Specialtype count starts at 1;
+		"dr2c_zombie_bodies" => { calc_offset = sprite_count/5; "MOD_ZBODY" } ,
+		"dr2c_zombie_heads"  => { calc_offset = sprite_count/3; "MOD_ZHEAD" },
+		_ => ""
 	};
 
 	if !special_name.is_empty() {
-		return Some((special_name.to_string(), width_count));
+		println!("SPECIAL: {}: {} ~ {}", special_name, calc_offset, sprite_count);
+		return Some((special_name.to_string(), calc_offset));
 	} else {
 		return None;
 	}

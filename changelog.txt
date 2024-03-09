@@ -4,17 +4,18 @@ x refresh mod list on start up
 - Recursion when choosing folder?
 x scrollbar not working
 x tab not showing
-- highlight.js
+x highlight.js -> svelte-highlight
 - Documentation in code (rustdocs)
 - Refactored documentation
-- Path not found? when there's no mods folder (Make a note)
-- Automod? (Experimental)
+x Path not found? when there's no mods folder (Make a note)
+
 
 Feature update:
-- Replacing line???
 - Replacing sprites with specific location
-- File saving HOOK
-- No modloader generator (auto generate needed files)
+- Automod? (Experimental)
+- No modloader generator (auto generate needed files for modder)
+
+
 - tutorial
 - Tool tips
 x dark/light mode
@@ -22,15 +23,17 @@ x Move documentation/instructions to side menu
 x window now save size if resized
 - About / suggestion box
 - updater?
-- mod order
-- option to SplitLine (to replace)
+- mod order?
+- option to comment
+- Error Log
 
 Modder QOL
+- File saving HOOK
 x blurbs
 x epilogues
 - loot table
 - traders
 
 Spritesheet
-- specialbody / head
-- zombie
+x specialbody / head
+x zombie

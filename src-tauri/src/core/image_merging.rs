@@ -155,9 +155,7 @@ fn calc_indices(modded: &SpriteCountArray, all: &SpriteCountArray) -> Vec<(Strin
 			let idxname = IDX_TO_SHEET[i];
 			result.push((idxname.to_string(), cumu[i] - modded[i]));
 
-			if let Some((newname, wcount)) = match_special_file(idxname) {
-				let calc_offset = (all[i] - modded[i])/wcount + 1;
-				println!("SHEET CHECK: {}: {} = {} - {} + 1", newname, calc_offset, all[i]/wcount, modded[i]/wcount);
+			if let Some((newname, calc_offset)) = match_special_file(idxname, all[i] - modded[i]) {
 				result.push((newname, calc_offset));
 			}			
 		}
