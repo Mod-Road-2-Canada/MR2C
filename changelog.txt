@@ -1,7 +1,10 @@
 TO FIX:
+- moreperk/save problem: update breaks stuffs (different stack size)
+
+
 x Session not found
 x refresh mod list on start up
-- Recursion when choosing folder?
+- Recursion when choosing folder? (Fixed????)
 x scrollbar not working
 x tab not showing
 x highlight.js -> svelte-highlight
@@ -9,6 +12,9 @@ x highlight.js -> svelte-highlight
 - Refactored documentation
 x Path not found? when there's no mods folder (Make a note)
 
+
+Dev features:
+- Automated test
 
 Feature update:
 - Replacing sprites with specific location
