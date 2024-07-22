@@ -22,7 +22,7 @@
 			console.timeEnd('copydir');
 			toast.success(count + " file(s) copied");
 		} catch (err) {
-			toast.error(err);
+			toast.error("copy_dir_all: " + err);
 		}
 
 		for (const mod of $MODS) {
@@ -102,7 +102,7 @@
 						<span class="label-text">{mod.name}</span>
 					</div>
 					{#if mod.status === ModStatus.Updated}
-						<div class="badge badge-secondary badge-outline">Updated!</div>
+						<div class="badge badge-accent badge-outline">Updated!</div>
 					{:else if mod.status === ModStatus.New}
 						<div class="badge badge-info badge-outline">New!</div>
 					{/if}
@@ -113,21 +113,27 @@
 
 	<div class="col-span-4 flex flex-col justify-between gap-3">
 		{#if $GFX_FOLDER != ""}
+			<button class="btn btn-accent btn-outline btn-sm sm:btn-md" 
+				on:click={() => saverloader.refreshJsons()} >Refresh List</button>
+
 			{#if modcount > 0}
-				<button class="btn btn-accent btn-outline btn-sm sm:btn-md" on:click={() => saverloader.refreshJsons()} >Refresh List</button>
 				<button class="btn btn-primary" on:click={promiseMods} disabled={isLoadingMods} >Load Selected Mods</button>
 			{:else}
-				<p>There must be an error somewhere. Please report back to Hwang on Discord.</p>
+				<p>No mod found in mods folder.</p>
 			{/if}
-			<div class="border rounded-xl p-2 grow">
+
+			<div class="border rounded-xl p-2 grow overflow-y-auto max-h-[35vh]">
 				{#if modfocus !== undefined}
 					<h3 class="text-lg text-center mb-3">{modfocus.name}</h3>
 					<p><b>Version: </b>{modfocus.version}</p>
 					<p><b>Creator: </b>{modfocus.creator}</p>
+					<!-- {#if modfocus.description} -->
+						<p class="whitespace-pre-line"><b>Description: </b>{modfocus.description}</p>
+					<!-- {/if} -->
 				{/if}
 				<!-- <h6 class="inline-block align-text-bottom">Mod count: {modcount}</h6> -->
 			</div>
-			<a  class="btn btn-secondary btn-outline" href="steam://launch/252610">Run From Steam</a>
+			<a  class="btn btn-secondary btn-outline" href="steam://launch/252610">Run DR2C from Steam</a>
 		{/if}
 	</div>
 </div>

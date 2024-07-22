@@ -25,7 +25,7 @@
 
 			toast.success("Changed cwd to " + selected);
 		} catch (err) {
-			toast.error(err);
+			toast.error("setCWD: " + err);
 			console.error(err);
 		}
 	}
@@ -46,7 +46,7 @@
 				GFX_FOLDER.set(selected);
 			}
 		} catch (err) {
-			toast.error(err);
+			toast.error("getGFX: " + err);
 			console.error(err);
 		}
 	}
@@ -68,13 +68,14 @@
 			// Only if CWD is available
 			await saverloader.loadData();
 
-			// First time since cookies cannot be loaded
+			// If cookies cannot be loaded, create new
 			if (!$COOKIES_LOADED) {
+				await invoke('create_dir_if_not_exist', {name: "mods"});
 				await saverloader.refreshJsons();
 				COOKIES_LOADED.set(true);
 			}
 		} catch (err) {
-			toast.error(err);
+			toast.error("backupGFX: " + err);
 			console.error(err);
 		}
 	}

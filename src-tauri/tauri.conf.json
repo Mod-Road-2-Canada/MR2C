@@ -1,13 +1,13 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/schema.json",
   "build": {
-    "beforeBuildCommand": "bun run build",
-    "beforeDevCommand": "bun run dev",
+    "beforeBuildCommand": "pnpm run build",
+    "beforeDevCommand": "pnpm run dev",
     "devPath": "http://localhost:5173",
     "distDir": "../build"
   },
   "package": {
-    "productName": "DR2C MOD INSTALLER",
+    "productName": "MR2C",
     "version": "1.2.0"
   },
   "tauri": {
@@ -65,7 +65,7 @@
         "height": 600,
         "width": 1000,
         "resizable": true,
-        "title": "DR2C MOD INSTALLER",
+        "title": "Mod Road To Canada",
         "theme": "Dark"
       }
     ]

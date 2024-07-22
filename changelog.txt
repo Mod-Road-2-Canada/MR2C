@@ -11,8 +11,7 @@ x highlight.js -> svelte-highlight
 - Documentation in code (rustdocs)
 - Refactored documentation
 x Path not found? when there's no mods folder (Make a note)
-
-
+- Show Versions
 Dev features:
 - Automated test
 

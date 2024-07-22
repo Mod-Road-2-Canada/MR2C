@@ -42,6 +42,7 @@
 			path: parsed.path,
 			version: parsed.version,
 			creator: parsed.creator,
+			description: parsed.description,
 
 			checked: false,
 			status: ModStatus.Normal
@@ -105,7 +106,7 @@
 			$MODS = tempMods;
 			toast.success("Mod list refreshed.");
 		} catch (err) {
-			toast.error(err);
+			toast.error("get_jsons: " + err);
 			console.error(err);
 		}
 
@@ -123,7 +124,7 @@
 			await invoke('save_cookies', {data: JSON.stringify(cookies), file: COOKIE_FILE});
 			toast.success("Session saved.", { position: "top-left" });
 		} catch (err) {
-			toast.error("Session not saved." + err);
+			toast.error("Session not saved: " + err);
 			console.error(err);
 		}
 	}

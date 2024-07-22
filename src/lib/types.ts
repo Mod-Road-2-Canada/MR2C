@@ -10,6 +10,7 @@ type ModInfo = {
 	path: string;
 	version: string;
 	creator: string;
+	description: string;
 
 	checked: boolean;
 	status: ModStatus;

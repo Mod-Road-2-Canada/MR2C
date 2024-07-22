@@ -4,7 +4,7 @@
   └📁 deathforth
   └📁 gfx
   └📁 mods
-  🐴 DR2C MOD INSTALLER
+  🐴 MR2C
 ```
 To install mods (that are compatible with this installer):
 - Step 0: **Make sure** you've already put this`.exe`file  

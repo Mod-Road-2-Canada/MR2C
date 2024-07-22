@@ -11,6 +11,7 @@
 
 	import modderdocs from '$lib/README.md?raw';
 	import playerdocs from '$lib/README_USER.md?raw';
+	import aboutdocs from '$lib/README_ABOUT.md?raw';
 //hljs.registerLanguage('javascript', require('highlight.js/lib/languages/javascript'));
 
 	export let toggle = false;
@@ -46,8 +47,9 @@
 			</div>
 
 			<div class="w-full max-w-full overflow-y-auto overflow-x-hidden h-screen">
-				<DocsCollapse title="Documentations" source={playerdocs}/>
-				<DocsCollapse title="Documentations" source={modderdocs} codeFormat=true/>
+				<DocsCollapse title="How to install mods" source={playerdocs}/>
+				<DocsCollapse title="Modder Documentations" source={modderdocs} codeFormat=true/>
+				<DocsCollapse title="About" source={aboutdocs} />
 			</div>
 
 		</Drawer.Content>

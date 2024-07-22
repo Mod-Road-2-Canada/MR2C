@@ -35,7 +35,7 @@
 
 		<SideDocs bind:toggle/>
 
-		<div role="tablist" class="tabs tabs-lifted tabs-lg ">
+		<div role="tablist" class="tabs tabs-lifted tabs-md">
 			<CustomTab href='/'>Home</CustomTab>
 			{#if $COOKIES_LOADED}
 				<CustomTab href='/mod'>Install Mods</CustomTab>

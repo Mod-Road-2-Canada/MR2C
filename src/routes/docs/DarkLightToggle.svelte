@@ -10,7 +10,7 @@
 </script>
 
 
-<label class="swap swap-flip fixed right-0 top-0 mt-4 mr-8 z-10">
+<label class="swap swap-flip fixed right-0 bottom-0 mb-4 mr-4 z-10">
 	<!-- this hidden checkbox controls the state -->
 	<input type="checkbox" on:change={toggleTheme} checked={$THEME === "cupcake"}/>
 	

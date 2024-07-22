@@ -143,6 +143,16 @@ pub fn get_jsons(mod_folder: &str) -> Result<Vec<String>, Error> {
 	Ok(vec_jsons)
 }
 
+#[tauri::command]
+pub fn create_dir_if_not_exist(name: &str) -> Result<(), Error> {
+	let path = Path::new(name);
+	if !path.exists() {
+		fs::create_dir(path)?;
+	}
+
+	Ok(())
+}
+
 // General fs
 #[tauri::command]
 pub fn check_file_in_cwd(file_path: &str) -> bool {

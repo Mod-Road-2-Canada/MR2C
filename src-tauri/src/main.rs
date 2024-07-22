@@ -10,9 +10,10 @@ use hook::{
 	get_cwd, 
 	save_cookies, 
 	load_cookies, 
-	get_jsons, 
-	check_file_in_cwd,
+	get_jsons,
 
+	check_file_in_cwd,
+	create_dir_if_not_exist,
 	copy_dir_all,
 	crop_all_img_to_gfx
 };
@@ -27,9 +28,10 @@ fn main() {
 			get_cwd, 
 			save_cookies, 
 			load_cookies, 
-			get_jsons, 
+			get_jsons,
+			
 			check_file_in_cwd,
-
+			create_dir_if_not_exist,
 			copy_dir_all,
 			crop_all_img_to_gfx,
 
