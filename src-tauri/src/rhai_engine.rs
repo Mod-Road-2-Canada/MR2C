@@ -1,8 +1,8 @@
 use rhai::{Engine, Scope};
 
-use crate::errorwrap::Error;
-mod func;
-use func::{save, merge_all_img_to_gfx, overlap_in_images, REMOVE, SavePosition};
+use app::errorwrap::Error;
+use app::core::func::{save, REMOVE, SavePosition};
+use app::core::image_merging::{merge_all_img_to_gfx, overlap_in_images};
 
 fn wrapper_save(file_name: &str, str_add: &str, str_search: &str, str_above: bool, str_bottom: bool, mod_tag: &str, mod_install_state: u8) -> String {
 	let str_position = match str_bottom {
@@ -16,13 +16,13 @@ fn wrapper_save(file_name: &str, str_add: &str, str_search: &str, str_above: boo
 	let result = save(file_name, str_add, str_search, str_position, mod_tag, mod_install_state);
 	match result {
 		Ok(()) => "".to_string(),
-		Err(e) => format!("{}", e),
+		Err(e) => format!("(save) {}", e),
 	}
 }
 
-fn wrapper_merge(mod_gfx: &str, game_gfx: &str, backup_gfx: &str, index_file: &str, mod_install_state: u8) -> String {
+fn wrapper_merge(mod_gfx: &str, game_gfx: &str, index_file: &str, mod_tag: &str, mod_install_state: u8) -> String {
 	if mod_install_state != REMOVE {
-		let result = merge_all_img_to_gfx(mod_gfx, game_gfx, backup_gfx, index_file);
+		let result = merge_all_img_to_gfx(mod_gfx, game_gfx, index_file, mod_tag);
 		match result {
 			Ok(_) => "".to_string(),
 			Err(e) => format!("{}", e),
@@ -52,12 +52,14 @@ macro_rules! throw_on_err {
 }
 
 #[tauri::command]
-pub fn load_mod(mod_file: &str, mod_tag: &str, gfx_modded: &str, gfx_vanilla: &str, mod_install_state: u8) -> Result<(), Error>{
+pub fn load_mod(mod_file: &str, mod_tag: &str, gfx_modded: &str, mod_install_state: u8) -> Result<(), Error>{
 	// Create a new person
 
 	// Create a new Rhai Engine and Scope
 	let mut engine = Engine::new();
 	let mut scope = Scope::new();
+	// Need scope.rewind() if you intend to make this global (reusable between mods)
+	// https://rhai.rs/book/engine/scope.html#admonition-dont-forget-to-rewind
 
 	// Register the Functions with the Rhai Engine
 	engine
@@ -87,13 +89,12 @@ pub fn load_mod(mod_file: &str, mod_tag: &str, gfx_modded: &str, gfx_vanilla: &s
 	scope.push_constant("mod_tag", mod_tag.to_string());
 	scope.push_constant("mod_install_state", mod_install_state);
 	scope.push_constant("gfx_modded", gfx_modded.to_string());
-	scope.push_constant("gfx_vanilla", gfx_vanilla.to_string());
 
 	// Read the script
 	println!("{:?}", std::env::current_dir()?.display());
 	let mut script = std::fs::read_to_string(mod_file)?;
 	script = script.replace("Save_This.", throw_on_err!("Savefile(File, Add, Search, Above, Bottom, mod_tag, mod_install_state);") );
-	script = script.replace("Merge_This.", throw_on_err!("Mergefile(GfxFolder, gfx_modded, gfx_vanilla, IndexFile, mod_install_state);") );
+	script = script.replace("Merge_This.", throw_on_err!("Mergefile(GfxFolder, gfx_modded, IndexFile, mod_tag, mod_install_state);") );
 	script = script.replace("Overlap_This.", throw_on_err!("Overlapfile(File, Add, mod_install_state);") );
 
 	script.push_str("RESULT");
@@ -103,14 +104,6 @@ pub fn load_mod(mod_file: &str, mod_tag: &str, gfx_modded: &str, gfx_vanilla: &s
 
 	match reslut {
 		Ok(_) => Ok(()),	// Code error
-		Err(e) => Err(Error::Script(format!("{}", e))),							// Script parsing error
+		Err(e) => Err(Error::ModScriptError(format!("{}", e))),							// Script parsing error
 	}
 }
-/*
-fn main() {
-	let result = load_mod("./src/doc.dfmod","haha", "", "", 1);
-	match result {
-		Ok(()) => println!("Result: Good "),
-		Err(error) => println!("{}", error),
-	}
-} */

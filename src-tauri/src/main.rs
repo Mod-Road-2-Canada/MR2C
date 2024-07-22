@@ -1,24 +1,19 @@
-#![cfg_attr(
-	all(not(debug_assertions), target_os = "windows"),
-	windows_subsystem = "windows"
-)]
+// Prevents additional console window on Windows in release, DO NOT REMOVE!!
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-#[macro_use(concat_string)]
-extern crate concat_string;
-
-
-#[macro_use]
-mod errorwrap;
 mod hook;
-mod loader;
+mod rhai_engine;
 
-use loader::load_mod;
+use rhai_engine::load_mod;
 use hook::{
 	set_cwd, 
 	get_cwd, 
 	save_cookies, 
 	load_cookies, 
-	get_jsons, 
+	get_jsons,
+
+	check_file_in_cwd,
+	create_dir_if_not_exist,
 	copy_dir_all,
 	crop_all_img_to_gfx
 };
@@ -33,12 +28,16 @@ fn main() {
 			get_cwd, 
 			save_cookies, 
 			load_cookies, 
-			get_jsons, 
+			get_jsons,
+			
+			check_file_in_cwd,
+			create_dir_if_not_exist,
 			copy_dir_all,
 			crop_all_img_to_gfx,
 
 			load_mod
 		])
+		.plugin(tauri_plugin_window_state::Builder::default().build())
 		.run(tauri::generate_context!())
 		.expect("error while running tauri application");
 }

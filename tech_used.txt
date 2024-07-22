@@ -1,0 +1,5 @@
+
+daisyui - tailwindcss
+svelte-french-toast
+svelte-markdown
+@tailwindcss/typography - prose (https://tailwindcss.com/docs/typography-plugin)

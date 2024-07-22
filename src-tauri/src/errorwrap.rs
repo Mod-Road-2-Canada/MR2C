@@ -1,5 +1,5 @@
 // create the error type that represents all errors possible in our program
-#[derive(Debug, thiserror::Error)]
+#[derive(thiserror::Error, Debug)]
 pub enum Error {
 	#[error(transparent)]
 	Io(#[from] std::io::Error),
@@ -13,9 +13,23 @@ pub enum Error {
 	ImgError(#[from] image::ImageError),
 
 	#[error("Script Error: {0}")]
-	Script(String),
+	ModScriptError(String),
+	#[error("Spritesheet Error: {0}")]
+	ModImgError(#[from] ModImgError),
 	#[error("ERR: {0}")]
 	Other(String)
+}
+
+#[derive(thiserror::Error, Debug)]
+pub enum ModImgError {
+	#[error("WARNING: TOO MANY SPRITES {0} > 15200 (GAME MIGHT BREAK)")]
+	TooManySprites(u32),
+
+	#[error("Spritesheet not found: {0}")]
+	SpriteMapNotFound(String),
+
+	// #[error("Range parse error: {0}")]
+	// ExtractRange(String)
 }
 
 // we must manually implement serde::Serialize

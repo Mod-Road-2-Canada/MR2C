@@ -5,177 +5,8 @@ use anyhow::Context;
 
 
 
-/*
-pub fn load_mod(mod_path: &str, mod_tag: &str, gfx_modded: &str, gfx_vanilla: &str, install_state: u8) -> Result<(), Error> {
-const INSTALL: u8 = 1;	// Bitwise value
-const REMOVE: u8 = 2;
-// const UPDATE: i8 = INSTALL | REMOVE;
-
-	// println!("File path: {}", std::env::current_dir()?.display());
-	println!("File: '{}'", mod_path);
-	let file = File::open(mod_path).with_context(|| format!("Path: {}", mod_path))?;
-
-	// if mod_tag.is_empty() { custombail!("Mod tag not defined for {}", mod_path); }	// Checked in front-end
-	let mod_tag = format!("(* {} *) ", mod_tag);
-
-	let mut command = String::new();
-
-	let mut file_path = String::new();
-	let mut str_search = String::new();
-	let mut str_replace = String::new();
-	let mut contents = String::new();
-
-	let mut img_first_path = String::new();
-
-	let reader = BufReader::new(file);
-	let mut lines = reader.lines().map(|l| l.unwrap()).peekable();
-
-	while let Some(line) = lines.next() {
-		let v: Vec<&str> = line.split_whitespace().collect();
-
-		if v.len() == 0 {
-			continue;	// Skip empty lines
-		}
-
-		command.clear();
-
-		if v.len() == 2 {
-			if v[0] == MOD_CMD {	// Starting of a command
-				command = v[1].to_string();
-			}
-		}
-
-		if install_state & INSTALL != 0 {
-			match command.as_str() {
-				"File:" => {
-					if let Some(line) = lines.next() {
-						println!("Filing: {}", line);
-						file_path = line.trim().replace("\"", "");			
-					}
-				},
-				"Line:" => {
-					while let Some(line) = lines.next() {
-						println!("Seeing: {}", line);
-						if !str_search.is_empty() { str_search.push('\n'); }
-						str_search.push_str(&line);
-
-						// Iterate 'til next command
-						if let Some(line) = lines.peek() { if line.contains(MOD_CMD) { break; } }
-					}
-				},
-				"Add:" => {
-					while let Some(line) = lines.next() {
-						println!("Replacing: {}", line);
-						if !str_replace.is_empty() {
-							str_replace.push('\n');
-						}
-						str_replace.push_str(&mod_tag);
-						str_replace.push_str(&line);
-
-						// Iterate 'til next command
-						if let Some(line) = lines.peek() { if line.contains(MOD_CMD) { break; } }
-					}
-				},
-				"Save" => {
-					let file_path_temp = file_path.clone() + ".temp";
-
-					{
-						let file = File::open(&file_path)?;
-						let out_file = File::create(&file_path_temp)?;
-
-						let mut reader = BufReader::new(file);
-						let mut writer = BufWriter::new(out_file);
-
-						if install_state & REMOVE != 0 {
-
-							contents = reader.lines()
-								.map(|line| line.unwrap())
-								.filter(|line| !line.contains(&mod_tag))
-								.collect::<Vec<_>>()
-								.join("\n");
-						} else if install_state & INSTALL != 0 {
-							reader.read_to_string(&mut contents)?;
-						}
-
-						if install_state & INSTALL != 0 {
-							str_replace = str_search.clone() + "\n" + &str_replace;
-							contents = contents.replace(&str_search, &str_replace);
-						}
-
-						writer.write_all(contents.as_bytes())?;
-					}
-
-					fs::rename(&file_path_temp, &file_path)?;
-
-					contents.clear();
-					// file_path.clear(); // Multiple edits in a file
-					str_search.clear();
-					str_replace.clear();
-
-					println!("Saved.");
-				},
-				/*
-				"TakeImg:" => {
-					if let Some(line) = lines.next() {
-						println!("Taking: {}", line);
-						img_path = line.trim().replace("\"", "");			
-					}
-				},
-				"MergeImg:" => {
-					if let Some(line) = lines.next() {
-						println!("Merging: {}", line);
-						let img_merge_path = line.trim().replace("\"", "");
-
-						merge_two_images(&img_path, &img_merge_path)?;
-						img_path.clear();	
-					}
-				}, */
-
-				"MergeAllIn:" => {
-					if let Some(line) = lines.next() {
-						if install_state != REMOVE {
-							println!("Merging All: {}", line);
-
-							let img_merge_path = line.trim().replace("\"", "");
-							merge_all_img_to_gfx(&img_merge_path, gfx_modded, gfx_vanilla)?;
-						}
-					}
-				},
-
-				"OverlapImage:" => {
-					if let Some(line) = lines.next() {
-						img_first_path = line.trim().replace("\"", "");
-					}
-				},
-
-				"WithImage:" => {
-					if let Some(line) = lines.next() {
-						if install_state != REMOVE {
-							println!("Replacing: {}", line);
-
-							let img_overlap_path = line.trim().replace("\"", "");
-							overlap_in_images(&img_first_path, &img_overlap_path)?;
-						}
-					}
-				},
-
-				"" => {
-					custombail!("No command for argument: {}", line);
-				},
-				_ => {
-					custombail!("Invalid command: '{}'", command);
-				}
-			}
-		} 
-
-	}
-
-	// std::thread::sleep(std::time::Duration::from_secs(2));
-	Ok(())
-} */
-
-
-use crate::errorwrap::Error;
+use app::errorwrap::Error;
+use app::custombail;
 
 
 fn crop_modded_image<P: AsRef<Path>>(modded_path: P, backup_path: P, dest_path: P) -> Result<(), Error> {
@@ -226,8 +57,26 @@ pub fn crop_all_img_to_gfx(modded_dir: &str, backup_dir: &str, dest_dir: &str) -
 
 
 
+fn check_two_dir_name(src: &str, dst: &str) -> Result<(), Error> {
+	let src_path = Path::new(src);
+	let dst_path = Path::new(dst);
+	if let (Some(src_name), Some(dst_name)) = (src_path.file_name(), dst_path.file_name()) {
+		if src_name != dst_name {
+			custombail!("Chosen folder name is not '{}'", dst_name.to_string_lossy().into_owned());
+		}
+	} else {
+		custombail!("Unrecoverable error?");
+	}
+
+	Ok(())
+}
+
 #[tauri::command]
 pub fn copy_dir_all(src: &str, dst: &str, overwrite: bool) -> Result<u16, Error> {
+
+	// Check if name is the same
+	check_two_dir_name(src, dst)?;
+	// Create folder
 	fs::create_dir_all(dst)?;
 
 	let mut countdir = 0;
@@ -283,7 +132,7 @@ pub fn get_jsons(mod_folder: &str) -> Result<Vec<String>, Error> {
 				vec_jsons.push(json_name);
 				vec_jsons.push(contents);
 			},
-			_ => println!("Skipped file {}", json_name),
+			_ => println!("Skipped file/folder {}", json_name),
 		}
 	}
 
@@ -292,6 +141,28 @@ pub fn get_jsons(mod_folder: &str) -> Result<Vec<String>, Error> {
 	}
 
 	Ok(vec_jsons)
+}
+
+#[tauri::command]
+pub fn create_dir_if_not_exist(name: &str) -> Result<(), Error> {
+	let path = Path::new(name);
+	if !path.exists() {
+		fs::create_dir(path)?;
+	}
+
+	Ok(())
+}
+
+// General fs
+#[tauri::command]
+pub fn check_file_in_cwd(file_path: &str) -> bool {
+	if let Ok(current_dir) = std::env::current_dir() {
+		if let Some(path) = Path::new(file_path).parent() {
+			return path == current_dir;
+		}
+	}
+
+	false
 }
 
 #[tauri::command]
@@ -308,8 +179,14 @@ pub fn set_cwd(path_cwd: &str) -> Result<(), Error> {
 
 #[tauri::command]
 pub fn load_cookies(file: &str) -> Result<String, Error> {
-	let cookies = fs::read_to_string(file)?;
-	Ok(cookies)
+	// Return json string if found
+	// empty string otherwise
+
+	match fs::read_to_string(file) {
+		Ok(cookies) => Ok(cookies),
+		Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(String::new()),
+		Err(e) => Err(e.into()),
+	}
 }
 
 #[tauri::command]
@@ -318,3 +195,5 @@ pub fn save_cookies(data: &str, file: &str) -> Result<(), Error> {
 	println!("Writen {} {}", 	std::env::current_dir().unwrap().display(), file);
 	Ok(())
 }
+
+

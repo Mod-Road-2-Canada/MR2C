@@ -1,81 +1,18 @@
 <script lang='ts'>
-	import { GFX_FOLDER, BACKUP_GFX_FOLDER, DATA_FILE, MODS } from '$lib/stores.ts';
+	import { GFX_FOLDER, MODS } from '$lib/stores';
+	import { BACKUP_GFX_FOLDER } from '$lib/consts';
+	
+	import { ModStatus } from '$lib/types';
 
 	import { invoke } from '@tauri-apps/api/tauri';
-
 	import toast from 'svelte-french-toast';
 
-	const MOD_FOLDER = "mods";
+	import SaverLoader from '../SaverLoader.svelte';
+	let saverloader;
 
 	$: modcount = $MODS.length;
 	$: selectedMods = $MODS.filter(m => m.checked === true);
 	$: { console.log(selectedMods); }
-
-	async function getJsons () {
-		try {
-			const modRawArray = await invoke('get_jsons', {modFolder: MOD_FOLDER});
-			let tempMods = [];
-
-			for (var i = 0; i < modRawArray.length; i+=2) {
-				const new_mod = JSON.parse(modRawArray[i + 1]);
-
-				if (!new_mod.hasOwnProperty('path')) {
-					toast.error("JSON: Mod with no path: " + modRawArray[i]);
-					continue;
-				}
-
-				if (!new_mod.hasOwnProperty('version')) {
-					toast.error("JSON: Mod with no version: " + modRawArray[i]);
-					continue;
-				}
-
-				if (!new_mod.hasOwnProperty('name')) {
-					toast.error("JSON: Mod with no name: '" + modRawArray[i] + "'");
-					new_mod.name = modRawArray[i];
-				}
-
-				if (!new_mod.hasOwnProperty('tag')) {
-					new_mod.tag = modRawArray[i];
-				}
-
-				let existmod = tempMods.find(m => m.name === new_mod.name);
-				if (existmod !== undefined) {
-					existmod = Object.assign(existmod, new_mod);
-				} else {
-					let existtag = tempMods.find(m => m.tag === new_mod.tag)
-					if (existtag !== undefined) {
-						toast.error("JSON: Conflicting mod tags: '" + modRawArray[i] + "' and '" + m.name + "'");
-					}
-
-					tempMods.push(new_mod);		
-				}
-			}
-
-			$MODS = tempMods;
-			toast.success("Mod list refreshed.");
-		} catch (err) {
-			toast.error(err);
-			console.error(err);
-		}
-
-		await saveData();
-	}
-
-	export async function saveData () {
-		try {
-			const cookies = {
-				gfx_dir: $GFX_FOLDER,
-				modlist: $MODS,
-			}
-			await invoke('save_cookies', {data: JSON.stringify(cookies), file: DATA_FILE});
-			toast.success("Session saved.");
-		} catch (err) {
-			toast.error("Session not saved." + err);
-			console.error(err);
-		}
-	}
-
-
 
 
 	async function loadMods () {
@@ -85,7 +22,7 @@
 			console.timeEnd('copydir');
 			toast.success(count + " file(s) copied");
 		} catch (err) {
-			toast.error(err);
+			toast.error("copy_dir_all: " + err);
 		}
 
 		for (const mod of $MODS) {
@@ -95,13 +32,12 @@
 					modFile: mod.path, 
 					modTag: mod.tag,
 					gfxModded: $GFX_FOLDER,
-					gfxVanilla: BACKUP_GFX_FOLDER
 				};
 
 				await invoke('load_mod', {...modArgs, modInstallState: 2});
 				if (mod.checked) {
 					await invoke('load_mod', {...modArgs, modInstallState: 1});
-					toast.success("Done: " + mod.name, { position: "bottom-right"});
+					toast.success("Loaded: " + mod.name, { position: "bottom-right"});
 				}
 				
 				console.timeEnd(mod.name);
@@ -110,7 +46,7 @@
 			}
 		}	
 
-		await saveData();
+		await saverloader.saveData();
 	}
 
   const myPromise = () => {
@@ -147,16 +83,29 @@
 </script>
 
 
+<SaverLoader bind:this={saverloader} />
+
 <div class="grid grid-cols-12 gap-3 h-full p-3">
 	<div class="col-span-8 border rounded-xl p-2" style="overflow: overlay;">
 		{#each $MODS as mod, i}
-			<div class="form-control hover:bg-neutral-focus rounded-xl" on:mouseover={() => handleMouseOver(i)}>
-				<label class="label justify-normal">
-					<input class="checkbox me-3 checkbox-primary"
-						type=checkbox 
-						bind:checked={mod.checked} value={mod}
-					/>
-					<span class="label-text">{mod.name}</span>
+			<div class="form-control hover:bg-base-300 rounded-xl" 
+				role="presentation"
+				on:mouseover={() => handleMouseOver(i)} 
+				on:focus={() => handleMouseOver(i)} >
+
+				<label class="label justify-between">
+					<div class="flex items-center">
+						<input class="checkbox me-3 checkbox-primary"
+							type=checkbox 
+							bind:checked={mod.checked} value={mod}
+						/>
+						<span class="label-text">{mod.name}</span>
+					</div>
+					{#if mod.status === ModStatus.Updated}
+						<div class="badge badge-accent badge-outline">Updated!</div>
+					{:else if mod.status === ModStatus.New}
+						<div class="badge badge-info badge-outline">New!</div>
+					{/if}
 				</label>
 			</div>		
 		{/each}
@@ -164,36 +113,31 @@
 
 	<div class="col-span-4 flex flex-col justify-between gap-3">
 		{#if $GFX_FOLDER != ""}
+			<button class="btn btn-accent btn-outline btn-sm sm:btn-md" 
+				on:click={() => saverloader.refreshJsons()} >Refresh List</button>
+
 			{#if modcount > 0}
-				<button class="btn btn-accent btn-outline btn-sm sm:btn-md" on:click={getJsons} >Refresh List</button>
 				<button class="btn btn-primary" on:click={promiseMods} disabled={isLoadingMods} >Load Selected Mods</button>
 			{:else}
-				<button class="btn" on:click={getJsons} >Load Mods</button>
+				<p>No mod found in mods folder.</p>
 			{/if}
-			<div class="border rounded-xl p-2 grow">
+
+			<div class="border rounded-xl p-2 grow overflow-y-auto max-h-[35vh]">
 				{#if modfocus !== undefined}
 					<h3 class="text-lg text-center mb-3">{modfocus.name}</h3>
 					<p><b>Version: </b>{modfocus.version}</p>
 					<p><b>Creator: </b>{modfocus.creator}</p>
+					<!-- {#if modfocus.description} -->
+						<p class="whitespace-pre-line"><b>Description: </b>{modfocus.description}</p>
+					<!-- {/if} -->
 				{/if}
 				<!-- <h6 class="inline-block align-text-bottom">Mod count: {modcount}</h6> -->
 			</div>
-			<a  class="btn btn-secondary btn-outline" href="steam://launch/252610">Run From Steam</a>
+			<a  class="btn btn-secondary btn-outline" href="steam://launch/252610">Run DR2C from Steam</a>
 		{/if}
 	</div>
 </div>
 
 
 <style>
-	section {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		flex: 0.6;
-	}
-
-	h1 {
-		width: 100%;
-	}
 </style>
