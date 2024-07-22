@@ -7,7 +7,7 @@
     "distDir": "../build"
   },
   "package": {
-    "productName": "MRTC",
+    "productName": "Mod Road 2 Canada",
     "version": "1.2.0"
   },
   "tauri": {

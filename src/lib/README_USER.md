@@ -4,7 +4,7 @@
   └📁 deathforth
   └📁 gfx
   └📁 mods
-  🐴 MR2C
+  🐴 Mod Road 2 Canada
 ```
 To install mods (that are compatible with this installer):
 - Step 0: **Make sure** you've already put this`.exe`file  

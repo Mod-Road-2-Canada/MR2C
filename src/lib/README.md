@@ -9,7 +9,7 @@ File structure:
 		└📂 <b><em>Example_mod_folder</em></b>  ✔️
 			📑 <em>example.dfmod</em>    ✔️
 		📄 <em>example.json</em>         ✔️
-	🐴 MR2C
+	🐴 Mod Road 2 Canada
 </code></pre>
 
 
