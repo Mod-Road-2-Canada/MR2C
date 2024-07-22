@@ -7,7 +7,7 @@
     "distDir": "../build"
   },
   "package": {
-    "productName": "MR2C",
+    "productName": "MRTC",
     "version": "1.2.0"
   },
   "tauri": {
