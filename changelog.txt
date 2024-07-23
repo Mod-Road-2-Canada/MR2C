@@ -12,16 +12,21 @@ x Show Versions
 x dark/light mode
 x Move documentation/instructions to side menu
 x window now save size if resized
-- About /
+x About
 
-- Recursion when choosing folder? (Fixed????)
+
+Fix
+- Clean up error propagation
+
+- Recursion when choosing folder? (Fixed??)
 - Documentation in code (rustdocs)
-- Refactored documentation
+- Refactor documentation
 
 Dev features:
 - Automated test
 
 Feature update:
+- Error Log
 - Replacing sprites with specific location
 - Automod? (Experimental)
 - No modloader generator (auto generate needed files for modder)
@@ -34,7 +39,7 @@ Feature update:
 - updater?
 - mod order?
 - option to comment
-- Error Log
+
 
 Modder QOL
 - File saving HOOK

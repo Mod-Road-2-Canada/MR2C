@@ -77,8 +77,15 @@ pub fn save(file_name: &str, str_add: &str, str_search: &str, str_position: Save
 
 						_ => custombail!("SAVE: THIS SAVE POSITION WAS NOT SUPPOSED TO HAPPEN"), // ERROR
 					};
-					
-					contents = contents.replace(str_search, &str_replace)
+
+					// Warning if search term is not found
+					match contents.matches(str_search).count() {
+						0 => custombail!("Search term not found: \"{}\"", str_search),
+
+						_ => contents = contents.replace(str_search, &str_replace),
+						// TODO: Design: Should there be a warning for more than once?
+					}
+
 				},
 			}
 			// println!("Replace: {}", str_search);
