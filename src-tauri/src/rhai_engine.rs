@@ -20,9 +20,10 @@ fn wrapper_save(file_name: &str, str_add: &str, str_search: &str, str_above: boo
 	}
 }
 
-fn wrapper_merge(mod_gfx: &str, game_gfx: &str, index_file: &str, mod_tag: &str, mod_install_state: u8) -> String {
+fn wrapper_merge(mod_gfx: &str, index_file: &str, mod_tag: &str, mod_install_state: u8) -> String {
 	if mod_install_state != REMOVE {
-		let result = merge_all_img_to_gfx(mod_gfx, game_gfx, index_file, mod_tag);
+		const GFX_DIR: &str = "./gfx";
+		let result = merge_all_img_to_gfx(mod_gfx, GFX_DIR, index_file, mod_tag);
 		match result {
 			Ok(_) => "".to_string(),
 			Err(e) => format!("{}", e),
@@ -52,7 +53,7 @@ macro_rules! throw_on_err {
 }
 
 #[tauri::command]
-pub fn load_mod(mod_file: &str, mod_tag: &str, gfx_modded: &str, mod_install_state: u8) -> Result<(), Error>{
+pub fn load_mod(mod_file: &str, mod_tag: &str, mod_install_state: u8) -> Result<(), Error>{
 	// Create a new person
 
 	// Create a new Rhai Engine and Scope
@@ -88,13 +89,12 @@ pub fn load_mod(mod_file: &str, mod_tag: &str, gfx_modded: &str, mod_install_sta
 
 	scope.push_constant("mod_tag", mod_tag.to_string());
 	scope.push_constant("mod_install_state", mod_install_state);
-	scope.push_constant("gfx_modded", gfx_modded.to_string());
 
 	// Read the script
 	println!("{:?}", std::env::current_dir()?.display());
 	let mut script = std::fs::read_to_string(mod_file)?;
 	script = script.replace("Save_This.", throw_on_err!("Savefile(File, Add, Search, Above, Bottom, mod_tag, mod_install_state);") );
-	script = script.replace("Merge_This.", throw_on_err!("Mergefile(GfxFolder, gfx_modded, IndexFile, mod_tag, mod_install_state);") );
+	script = script.replace("Merge_This.", throw_on_err!("Mergefile(GfxFolder, IndexFile, mod_tag, mod_install_state);") );
 	script = script.replace("Overlap_This.", throw_on_err!("Overlapfile(File, Add, mod_install_state);") );
 
 	script.push_str("RESULT");

@@ -11,6 +11,8 @@ pub enum Error {
 	StripError(#[from] std::path::StripPrefixError),
 	#[error(transparent)]
 	ImgError(#[from] image::ImageError),
+	#[error(transparent)]
+	CopyError(#[from] fs_extra::error::Error),
 
 	#[error("Script Error: {0}")]
 	ModScriptError(String),

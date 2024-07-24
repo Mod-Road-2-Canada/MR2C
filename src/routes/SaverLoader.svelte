@@ -1,5 +1,5 @@
 <script lang='ts'>
-	import { GFX_FOLDER, MODS, THEME, COOKIES_LOADED } from '$lib/stores';
+	import { MODS, THEME, COOKIES_LOADED } from '$lib/stores';
 	import { COOKIE_FILE, MOD_FOLDER } from '$lib/consts';
 
 	import type { ModInfo, ModCookies } from '$lib/types';
@@ -118,7 +118,6 @@
 		try {
 			const cookies = {
 				theme: $THEME,
-				gfx_dir: $GFX_FOLDER,
 				modlist: $MODS,
 			}
 			await invoke('save_cookies', {data: JSON.stringify(cookies), file: COOKIE_FILE});
@@ -137,7 +136,6 @@
 				if (cookies_str) {
 					const cookies = JSON.parse(cookies_str);
 
-					GFX_FOLDER.set(cookies.gfx_dir);
 					MODS.set(cookies.modlist);
 					$THEME = cookies.theme;
 

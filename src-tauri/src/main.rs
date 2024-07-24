@@ -14,7 +14,8 @@ use hook::{
 
 	check_file_in_cwd,
 	create_dir_if_not_exist,
-	copy_dir_all,
+	create_backup_gfx,
+	restore_backup_gfx,
 	crop_all_img_to_gfx
 };
 
@@ -32,7 +33,8 @@ fn main() {
 			
 			check_file_in_cwd,
 			create_dir_if_not_exist,
-			copy_dir_all,
+			create_backup_gfx,
+			restore_backup_gfx,
 			crop_all_img_to_gfx,
 
 			load_mod

@@ -1,6 +1,5 @@
 <script lang='ts'>
-	import { GFX_FOLDER, MODS } from '$lib/stores';
-	import { BACKUP_GFX_FOLDER } from '$lib/consts';
+	import { MODS } from '$lib/stores';
 	
 	import { ModStatus } from '$lib/types';
 
@@ -18,9 +17,9 @@
 	async function loadMods () {
 		try {	// Clear / Reset the modded spritesheets to vanillas
 			console.time('copydir');
-			let count = await invoke('copy_dir_all', {src: BACKUP_GFX_FOLDER, dst: $GFX_FOLDER, overwrite: true});
+			await invoke('restore_backup_gfx');
 			console.timeEnd('copydir');
-			toast.success(count + " file(s) copied");
+			toast.success("GFX restored.");
 		} catch (err) {
 			toast.error("copy_dir_all: " + err);
 		}
@@ -31,7 +30,6 @@
 				let modArgs = { 
 					modFile: mod.path, 
 					modTag: mod.tag,
-					gfxModded: $GFX_FOLDER,
 				};
 
 				await invoke('load_mod', {...modArgs, modInstallState: 2});
@@ -112,29 +110,27 @@
 	</div>
 
 	<div class="col-span-4 flex flex-col justify-between gap-3">
-		{#if $GFX_FOLDER != ""}
-			<button class="btn btn-accent btn-outline btn-sm sm:btn-md" 
-				on:click={() => saverloader.refreshJsons()} >Refresh List</button>
+		<button class="btn btn-accent btn-outline btn-sm sm:btn-md" 
+			on:click={() => saverloader.refreshJsons()} >Refresh List</button>
 
-			{#if modcount > 0}
-				<button class="btn btn-primary" on:click={promiseMods} disabled={isLoadingMods} >Load Selected Mods</button>
-			{:else}
-				<p>No mod found in mods folder.</p>
-			{/if}
-
-			<div class="border rounded-xl p-2 grow overflow-y-auto max-h-[35vh]">
-				{#if modfocus !== undefined}
-					<h3 class="text-lg text-center mb-3">{modfocus.name}</h3>
-					<p><b>Version: </b>{modfocus.version}</p>
-					<p><b>Creator: </b>{modfocus.creator}</p>
-					<!-- {#if modfocus.description} -->
-						<p class="whitespace-pre-line"><b>Description: </b>{modfocus.description}</p>
-					<!-- {/if} -->
-				{/if}
-				<!-- <h6 class="inline-block align-text-bottom">Mod count: {modcount}</h6> -->
-			</div>
-			<a  class="btn btn-secondary btn-outline" href="steam://launch/252610">Run DR2C from Steam</a>
+		{#if modcount > 0}
+			<button class="btn btn-primary" on:click={promiseMods} disabled={isLoadingMods} >Load Selected Mods</button>
+		{:else}
+			<p>No mod found in mods folder.</p>
 		{/if}
+
+		<div class="border rounded-xl p-2 grow overflow-y-auto max-h-[35vh]">
+			{#if modfocus !== undefined}
+				<h3 class="text-lg text-center mb-3">{modfocus.name}</h3>
+				<p><b>Version: </b>{modfocus.version}</p>
+				<p><b>Creator: </b>{modfocus.creator}</p>
+				<!-- {#if modfocus.description} -->
+					<p class="whitespace-pre-line"><b>Description: </b>{modfocus.description}</p>
+				<!-- {/if} -->
+			{/if}
+			<!-- <h6 class="inline-block align-text-bottom">Mod count: {modcount}</h6> -->
+		</div>
+		<a  class="btn btn-secondary btn-outline" href="steam://launch/252610">Run DR2C from Steam</a>
 	</div>
 </div>
 

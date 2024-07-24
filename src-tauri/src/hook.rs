@@ -57,60 +57,106 @@ pub fn crop_all_img_to_gfx(modded_dir: &str, backup_dir: &str, dest_dir: &str) -
 
 
 
-fn check_two_dir_name(src: &str, dst: &str) -> Result<(), Error> {
-	let src_path = Path::new(src);
-	let dst_path = Path::new(dst);
-	if let (Some(src_name), Some(dst_name)) = (src_path.file_name(), dst_path.file_name()) {
-		if src_name != dst_name {
-			custombail!("Chosen folder name is not '{}'", dst_name.to_string_lossy().into_owned());
-		}
-	} else {
-		custombail!("Unrecoverable error?");
+
+// Hard code everything because it breaks if not hard coded
+
+const GFX_DIR: &str = "./gfx";
+const MR2C_DIR: &str = "./mr2c";
+const MR2C_GFX_DIR: &str = "./mr2c/gfx";
+const DR2C_DIR: &str = "./";
+
+fn check_gfx_exists() -> Result<(), Error> {
+    let path = Path::new(GFX_DIR);
+    if path.is_dir() {
+        Ok(())
+    } else {
+        Err(Error::Other("Cannot locate gfx folder. Please try putting this executable in the DeathRoadToCanada folder.".to_string()))
+    }
+}
+
+#[tauri::command]
+pub fn create_backup_gfx() -> Result<(), Error> {
+	// Create mr2c/gfx if it wasn't created yet
+	let mr2c_path = Path::new(MR2C_DIR);
+	if !mr2c_path.exists() {
+		fs::create_dir(mr2c_path)?;
 	}
 
+	check_gfx_exists()?;
+
+	let options = fs_extra::dir::CopyOptions::new().overwrite(true).depth(5);	// Limiting depth of folder
+
+	fs_extra::copy_items(&[GFX_DIR], mr2c_path, &options)?;
 	Ok(())
 }
 
 #[tauri::command]
-pub fn copy_dir_all(src: &str, dst: &str, overwrite: bool) -> Result<u16, Error> {
+pub fn restore_backup_gfx() -> Result<(), Error> {
+	check_gfx_exists()?;
 
-	// Check if name is the same
-	check_two_dir_name(src, dst)?;
-	// Create folder
-	fs::create_dir_all(dst)?;
+	let options = fs_extra::dir::CopyOptions::new().overwrite(true).depth(5);
 
-	let mut countdir = 0;
-	let mut countcopied: u16 = 0;
-
-	for entry in WalkDir::new(src) {
-		let entry = entry?;
-		let path = entry.path();
-		let destination = Path::new(dst).join(path.strip_prefix(src)?);
-
-		if destination.try_exists()? && !overwrite { 
-			println!("Already exists. {}", destination.display());
-			continue; 
-		} else {
-			println!("Copy to: {}", destination.display());
-		}
-
-		if path.is_dir() {
-			fs::create_dir_all(&destination)?;
-			countdir += 1;
-		} else {
-			match path.extension() {
-				Some(ex) if ex == "png" => {
-					fs::copy(&path, &destination)?;
-					countcopied += 1; 
-				},
-				_ => continue,
-			}
-		}
-	}
-
-	println!("Directory created: {}\nCopied: {}", countdir, countcopied);
-	Ok(countcopied)
+	fs_extra::copy_items(&[MR2C_GFX_DIR], DR2C_DIR, &options)?;
+	Ok(())
 }
+
+// #[tauri::command]
+// pub fn copy_dir_all(src: &str, dst: &str, overwrite: bool) -> Result<(), Error> {
+// 	// Check if name is the same
+// 	// check_two_dir_name(src, dst)?;
+// 	println!("COPY: {} \n-> {}", src, dst);
+
+	
+// 	options.copy_inside = true;
+
+// 	let sources = vec![
+// 		src
+// 	];
+
+// 	fs_extra::copy_items(&sources, dst, &options)?;
+
+// 	Ok(())
+// 	// // Check if name is the same
+// 	// check_two_dir_name(src, dst)?;
+// 	// // Create folder
+// 	// fs::create_dir_all(dst)?;
+
+// 	// let mut countdir = 0;
+// 	// let mut countcopied: u16 = 0;
+
+// 	// for entry in WalkDir::new(src) {
+// 	// 	let entry = entry?;
+// 	// 	let path = entry.path();
+// 	// 	let destination = Path::new(dst).join(path.strip_prefix(src)?);
+
+// 	// 	if destination.try_exists()? && !overwrite { 
+// 	// 		println!("Already exists. {}", destination.display());
+// 	// 		continue; 
+// 	// 	} else {
+// 	// 		println!("Copy to: {}", destination.display());
+// 	// 	}
+
+// 	// 	if path.is_dir() {
+// 	// 		fs::create_dir_all(&destination)?;
+// 	// 		countdir += 1;
+// 	// 	} else {
+// 	// 		match path.extension() {
+// 	// 			Some(ex) if ex == "png" => {
+// 	// 				fs::copy(&path, &destination)?;
+// 	// 				countcopied += 1; 
+// 	// 			},
+// 	// 			_ => continue,
+// 	// 		}
+// 	// 	}
+
+// 	// 	if countdir > 10 {
+// 	// 		break;
+// 	// 	}
+// 	// }
+
+// 	// println!("Directory created: {}\nCopied: {}", countdir, countcopied);
+// 	// Ok(countcopied)
+// }
 
 
 

@@ -9,6 +9,4 @@ pub mod core {
 	pub mod image_merging;
 	pub mod image_constant;
 
-	// Used for testing
-	pub mod copy_dir;
 }
