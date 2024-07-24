@@ -8,18 +8,19 @@
 
 	async function setCWD () {
 		try {
-			// const basedir = await executableDir();
-			// console.log(basedir);
 			const selected = await open({
 				directory: true,
 				multiple: false,
 				defaultPath: await invoke('get_cwd')
 			});
 
+			// const selected = "D:\\Steam\\steamapps\\common\\DeathRoadToCanada";
+
 			if (selected == null) {
 				throw "No folder selected";
 			} else {
 				await invoke('set_cwd', {pathCwd: selected});
+				await loadData();
 			}
 
 			toast.success("Changed cwd to " + selected);
@@ -29,8 +30,7 @@
 		}
 	}
 
-	import SaverLoader from './SaverLoader.svelte';
-	let saverloader;
+	import { loadData, refreshJsons } from './SaverLoader';
 
 	async function backupGFX () {
 
@@ -39,12 +39,12 @@
 			toast.success("GFX copied");
 
 			// Only if CWD is available
-			await saverloader.loadData();
+			await loadData();
 
 			// If cookies cannot be loaded, create new
 			if (!$COOKIES_LOADED) {
 				await invoke('create_dir_if_not_exist', {name: "mods"});
-				await saverloader.refreshJsons();
+				await refreshJsons();
 				COOKIES_LOADED.set(true);
 			}
 		} catch (err) {
@@ -54,14 +54,13 @@
 	}
 
 	onMount(() => {
-		saverloader.loadData();
+		loadData();
 	});
 
 </script>
 
-
-<SaverLoader bind:this={saverloader} />
-
 <div class="p-3">
-	<button class="btn join-item btn-primary" on:click={backupGFX}>Initialize (Back up gfx folder)</button>
+	<button class="btn btn-primary" on:click={backupGFX}>Initialize (Back up gfx)</button>
+
+	<!-- <button class="btn btn-secondary" on:click={setCWD}>CWD</button> -->
 </div>

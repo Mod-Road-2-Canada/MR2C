@@ -20,7 +20,6 @@ use hook::{
 };
 
 fn main() {
-	// std::env::set_current_dir("../../").unwrap();
 	println!("{}", std::env::current_dir().unwrap().display());
 
 	tauri::Builder::default()
