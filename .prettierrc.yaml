@@ -1,0 +1,11 @@
+trailingComma: 'es5'
+printWidth: 100
+useTabs: true
+tabWidth: 4
+semi: false
+singleQuote: true
+bracketSpacing: true
+objectWrap: 'preserve'
+bracketSameLine: true
+arrowParens: 'always'
+endOfLine: 'lf'

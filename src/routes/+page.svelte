@@ -1,10 +1,10 @@
 <script lang='ts'>
-	import { COOKIES_LOADED } from '$lib/stores';
+	import { MR2C_GLOBAL } from '$lib/stores.svelte';
 
 	import { onMount } from 'svelte';
 	import toast from 'svelte-french-toast';
-	import { invoke } from '@tauri-apps/api/tauri';
-	import { open } from '@tauri-apps/api/dialog';
+	import { invoke } from '@tauri-apps/api/core';
+	import { open } from '@tauri-apps/plugin-dialog';
 
 	async function setCWD () {
 		try {
@@ -42,10 +42,10 @@
 			await loadData();
 
 			// If cookies cannot be loaded, create new
-			if (!$COOKIES_LOADED) {
+			if (!MR2C_GLOBAL.COOKIES_LOADED) {
 				await invoke('create_dir_if_not_exist', {name: "mods"});
 				await refreshJsons();
-				COOKIES_LOADED.set(true);
+				MR2C_GLOBAL.COOKIES_LOADED = true;
 			}
 		} catch (err) {
 			toast.error("backupGFX: " + err);
@@ -60,7 +60,7 @@
 </script>
 
 <div class="p-3">
-	<button class="btn btn-primary" on:click={backupGFX}>Initialize (Back up gfx)</button>
+	<button class="btn btn-primary" onclick={backupGFX}>Initialize (Back up gfx)</button>
 
 	<!-- <button class="btn btn-secondary" on:click={setCWD}>CWD</button> -->
 </div>

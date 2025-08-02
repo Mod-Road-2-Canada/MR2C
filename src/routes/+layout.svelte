@@ -1,5 +1,6 @@
-<script>
+<script lang="ts">
 	import '$lib/app.css'
+	import { onMount } from 'svelte';
 
 	import CustomTab from './CustomTab.svelte';
 
@@ -8,10 +9,16 @@
 	import banner from '$lib/images/banner.png';
 	import { Toaster } from 'svelte-french-toast';
 
-	import { COOKIES_LOADED, THEME } from '$lib/stores';
+	import { MR2C_GLOBAL } from '$lib/stores.svelte';
+
+	
+	let { children } = $props();
 
 	// Automatic change theme
-	$: document.documentElement.setAttribute("data-theme", $THEME);
+	$effect(() => {
+		console.log(MR2C_GLOBAL.THEME)
+		document.documentElement.setAttribute("data-theme", MR2C_GLOBAL.THEME);
+	});
 
 	// Toast default options
 	let toastNewDefault = {
@@ -24,27 +31,27 @@
 		},	
 	}
 
-	let toggle = false;
+	let showDocs = $state(false);
 </script>
 
-<div class:halfw={toggle} class="container-transition w-full">
+<div class:halfw={showDocs} class="container-transition w-full">
 	<div class="flex align-items-end relative"  
 		style="background: url({banner}) no-repeat center; background-size: cover; height: 30vh;">
 
 		<Toaster toastOptions={toastNewDefault}/>
 
-		<SideDocs bind:toggle/>
+		<SideDocs bind:showDocs/>
 
 		<div role="tablist" class="tabs tabs-lifted tabs-md">
 			<CustomTab href='/'>Home</CustomTab>
-			{#if $COOKIES_LOADED}
+			{#if MR2C_GLOBAL.COOKIES_LOADED}
 				<CustomTab href='/mod'>Install Mods</CustomTab>
 			{/if}
 		</div>
 	</div>
 
 	<div style="height: 70vh;">
-		<slot />
+		{@render children?.()}
 	</div>
 
 </div>

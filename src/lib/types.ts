@@ -1,22 +1,22 @@
 export enum ModStatus {
-  Normal = 0,
-  New = 1,
-  Updated = 2,
+	Normal = 0,
+	New = 1,
+	Updated = 2,
 }
 
-type ModInfo = {
-	name: string;
-	tag: string;
-	path: string;
-	version: string;
-	creator: string;
-	description: string;
+export type ModInfo = {
+	name: string
+	tag: string
+	path: string
+	version: string
+	creator: string
+	description: string
 
-	checked: boolean;
-	status: ModStatus;
-};
+	checked: boolean
+	status: ModStatus
+}
 
-type ModCookies = {
-	gfx_dir: string;
-	modlist: ModInfo[];
+export type ModCookies = {
+	gfx_dir: string
+	modlist: ModInfo[]
 }

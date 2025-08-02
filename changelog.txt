@@ -1,5 +1,8 @@
 TO FIX:
 - moreperk/save problem: update breaks stuffs (different stack size)
+- MR2C Warning: fail to find search term and duplicate search term
+- Add a console/log and way to output log.
+- Make MR2C ACTUALLY work on Mac
 
 v1.2.0
 x Session not found

@@ -5,7 +5,7 @@ pnpm install
 pnpm tauri dev
 ```
 
-src/lib/README.md
+src/lib/README_USER.md
 
 
 ## Documentation

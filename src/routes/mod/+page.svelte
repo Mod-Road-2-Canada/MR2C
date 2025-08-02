@@ -1,17 +1,15 @@
 <script lang='ts'>
-	import { MODS } from '$lib/stores';
+	import { MR2C_GLOBAL } from '$lib/stores.svelte';
 	
-	import { ModStatus } from '$lib/types';
+	import { ModStatus, type ModInfo } from '$lib/types';
 
-	import { invoke } from '@tauri-apps/api/tauri';
+	import { invoke } from '@tauri-apps/api/core';
 	import toast from 'svelte-french-toast';
 
 	import { saveData, refreshJsons } from '../SaverLoader';
 
-	$: modcount = $MODS.length;
-	$: selectedMods = $MODS.filter(m => m.checked === true);
-	$: { console.log(selectedMods); }
-
+	let ALL_MODS = MR2C_GLOBAL.MODS;
+	let selectedMods = $derived(ALL_MODS.filter(m => m.checked === true));
 
 	async function loadMods () {
 		try {	// Clear / Reset the modded spritesheets to vanillas
@@ -23,7 +21,7 @@
 			toast.error("copy_dir_all: " + err);
 		}
 
-		for (const mod of $MODS) {
+		for (const mod of ALL_MODS) {
 			try {
 				console.time(mod.name);
 				let modArgs = { 
@@ -46,15 +44,7 @@
 		await saveData();
 	}
 
-  const myPromise = () => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve();
-      }, 5000);
-    });
-  };
-
-	let isLoadingMods = false;
+	let isLoadingMods = $state(false);
 	function promiseMods () {
 		isLoadingMods = true;
 
@@ -73,19 +63,19 @@
 		}, 5000);
 	}
 
-	let modfocus = undefined;
-	function handleMouseOver(i) {
-		modfocus = $MODS.at(i);
+	let modfocus: ModInfo | undefined = $state(undefined);
+	function handleMouseOver(index: number) {
+		modfocus = ALL_MODS.at(index);
 	}
 </script>
 
 <div class="grid grid-cols-12 gap-3 h-full p-3">
-	<div class="col-span-8 border rounded-xl p-2" style="overflow: overlay;">
-		{#each $MODS as mod, i}
+	<div class="col-span-8 border border-base-content rounded-xl p-2" style="overflow: overlay;">
+		{#each ALL_MODS as mod, i}
 			<div class="form-control hover:bg-base-300 rounded-xl" 
 				role="presentation"
-				on:mouseover={() => handleMouseOver(i)} 
-				on:focus={() => handleMouseOver(i)} >
+				onmouseover={() => handleMouseOver(i)} 
+				onfocus={() => handleMouseOver(i)} >
 
 				<label class="label justify-between">
 					<div class="flex items-center">
@@ -107,19 +97,19 @@
 
 	<div class="col-span-4 flex flex-col justify-between gap-3">
 		<button class="btn btn-accent btn-outline btn-sm sm:btn-md" 
-			on:click={() => refreshJsons()} >Refresh List</button>
+			onclick={() => refreshJsons()} >Refresh List</button>
 
-		{#if modcount > 0}
-			<button class="btn btn-primary uppercase" on:click={promiseMods} disabled={isLoadingMods} >Load Selected Mods</button>
+		{#if ALL_MODS.length > 0}
+			<button class="btn btn-primary uppercase" onclick={promiseMods} disabled={isLoadingMods} >Load Selected Mods</button>
 		{:else}
 			<p>No mod found in mods folder.</p>
 		{/if}
 
-		<div class="border rounded-xl p-2 grow overflow-y-auto max-h-[35vh]">
+		<div class="border border-base-content rounded-xl p-2 grow overflow-y-auto max-h-[35vh]">
 			{#if modfocus !== undefined}
 				<h3 class="text-lg text-center mb-3">{modfocus.name}</h3>
-				<p><b>Version: </b>{modfocus.version}</p>
-				<p><b>Creator: </b>{modfocus.creator}</p>
+				<p><b>Version:</b> {modfocus.version}</p>
+				<p><b>Creator:</b> {modfocus.creator}</p>
 				{#if modfocus.description}
 					<p class="whitespace-pre-line"><b>Description: </b>{modfocus.description}</p>
 				{/if}
@@ -130,6 +120,3 @@
 	</div>
 </div>
 
-
-<style>
-</style>
